@@ -29,12 +29,13 @@ link_directories("${RPCLIB_LIBS_DIR}")
 
 
 set(SRC_PATH "${PROJECT_SOURCE_DIR}/src")
+set(COMMON_PATH "${SRC_PATH}/common")
 set(CLIENT_PATH "${SRC_PATH}/client")
 set(SERVER_PATH "${SRC_PATH}/server")
 
-
-set(COMMON_PATH "${SRC_PATH}/common")
 include_directories("${COMMON_PATH}/include")
+include_directories("${CLIENT_PATH}/include")
+include_directories("${SERVER_PATH}/include")
 
 
 if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
@@ -47,6 +48,7 @@ endif()
 function(createLibrary varName varSrcPath)
     file(GLOB_RECURSE TMP_SRC
         "${varSrcPath}/include/*.h"
+        "${varSrcPath}/include/*.hpp"
         "${varSrcPath}/*.cpp"
     )
     add_library(${varName} ${TMP_SRC})
@@ -57,6 +59,7 @@ endfunction(createLibrary)
 function(createExecutable varName varSrcPath)
     file(GLOB_RECURSE TMP_SRC
         "${varSrcPath}/include/*.h"
+        "${varSrcPath}/include/*.hpp"
         "${varSrcPath}/*.cpp"
     )
     add_executable(${varName} ${TMP_SRC})
