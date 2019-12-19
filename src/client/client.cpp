@@ -1,25 +1,20 @@
-#include <iostream>
-
 #include "rpc/client.h"
+#include "DataFormat.hpp"
+
+using namespace std;
 
 int main() {
     rpc::client c("localhost", 8080);
 
-    std::cout << "add(2, 3) = ";
-    double five = c.call("add", 2, 3).as<double>();
-    std::cout << five << std::endl;
+    ObjectState obj1("asd", Transform(1, 2, 3, 4, 5, 6, 7));
+    ObjectState obj2("zxc", Transform(11, 12, 13, 14, 15, 16, 17));
 
-    std::cout << "sub(3, 2) = ";
-    double one = c.call("sub", 3, 2).as<double>();
-    std::cout << one << std::endl;
+    FrameState frame("test");
+    frame.objectStates.push_back(obj1);
+    frame.objectStates.push_back(obj2);
 
-    std::cout << "mul(5, 0) = ";
-    double zero = c.call("mul", five, 0).as<double>();
-    std::cout << zero << std::endl;
-
-    std::cout << "div(3, 0) = ";
-    double hmm = c.call("div", 3, 0).as<double>();
-    std::cout << hmm << std::endl;
+    int result = c.call("createFrame", frame).as<int>();
+    printf("result = %d\n", result);
 
     return 0;
 }

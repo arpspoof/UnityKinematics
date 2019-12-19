@@ -1,25 +1,25 @@
 #include "rpc/server.h"
+#include "DataFormat.hpp"
 
-double divide(double a, double b) { return a / b; }
+using namespace std;
 
-struct subtractor {
-    double operator()(double a, double b) { return a - b; }
-};
+int createFrame(FrameState frameState)
+{
+    printf("receive frame, nObj = %ld:\n", frameState.objectStates.size());
+    printf("session name = %s\n", frameState.sessionName.c_str());
+    for (auto& obj : frameState.objectStates) {
+        printf("obj: name = %s, p = %f,%f,%f, q = %f,%f,%f,%f\n", obj.objectName.c_str(), 
+            obj.transform.p.x, obj.transform.p.y, obj.transform.p.z,
+            obj.transform.q.w, obj.transform.q.x, obj.transform.q.y, obj.transform.q.z);
+    }
+    return 0;
+}
 
-struct multiplier {
-    double multiply(double a, double b) { return a * b; }
-};
-
-int main() {
+int main() 
+{
     rpc::server srv(8080);
 
-    subtractor s;
-    multiplier m;
-
-    srv.bind("add", [](double a, double b) { return a + b; });
-    srv.bind("sub", s);
-    srv.bind("div", &divide);
-    srv.bind("mul", [&m](double a, double b) { return m.multiply(a, b); });
+    srv.bind("createFrame", &createFrame);
 
     srv.run();
 
