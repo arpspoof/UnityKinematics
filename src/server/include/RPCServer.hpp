@@ -1,4 +1,8 @@
 #pragma once
 
-void rpc_start(unsigned short port);
-void rpc_stop();
+#include "FrameBuffer.hpp"
+
+void RPCStart(unsigned short port);
+void RPCStop();
+
+FrameBuffer* RPCGetBuffer();

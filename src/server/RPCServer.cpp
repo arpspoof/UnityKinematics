@@ -6,6 +6,7 @@
 using namespace std;
 
 static rpc::server* rpc_server = nullptr;
+static FrameBuffer* rpc_buffer = nullptr;
 
 static int createFrame(FrameState frameState)
 {
@@ -19,14 +20,26 @@ static int createFrame(FrameState frameState)
     return 0;
 }
 
-void rpc_start(unsigned short port)
+void RPCStart(unsigned short port)
 {
+    printf("starting rpc server ...\n");
+    rpc_buffer = new FrameBuffer();
     rpc_server = new rpc::server(port);
     rpc_server->bind("createFrame", &createFrame);
-    rpc_server->run();
+    rpc_server->async_run();
 }
 
-void rpc_stop()
+void RPCStop()
 {
+    printf("stopping rpc server ...\n");
+    rpc_server->stop();
+    delete rpc_server;
+    delete rpc_buffer;
+    rpc_server = nullptr;
+    rpc_buffer = nullptr;
+}
 
+FrameBuffer* RPCGetBuffer()
+{
+    return rpc_buffer;
 }
