@@ -1,5 +1,6 @@
-#include "rpc/client.h"
+#include "AbstractDataProvider.hpp"
 #include "DataFormat.hpp"
+#include "RPCClient.hpp"
 
 #include <thread>
 #include <future>
@@ -7,12 +8,11 @@
 
 using namespace std;
 
-static rpc::client* c;
 static int x = 0;
 
-static void keepsend()
+class DataProvider : public AbstractDataProvider
 {
-    while(1)
+    virtual FrameState GetCurrentState() const override
     {
         ObjectState obj1("asd", Transform(x, 2, 3, 4, 5, 6, 7));
         ObjectState obj2("zxc", Transform(x+1, 12, 13, 14, 15, 16, 17));
@@ -22,13 +22,23 @@ static void keepsend()
         frame.objectStates.push_back(obj1);
         frame.objectStates.push_back(obj2);
 
-        c->call("createFrame", frame).as<int>();
-        this_thread::sleep_for(chrono::milliseconds(800));
+        return frame;
+    }
+};
+
+static void keepsend()
+{
+    DataProvider d;
+    d.frequency = 10000;
+    while(1)
+    {
+        d.Tick(1000);
+        x++;
     }
 }
 
 int main() {
-    c = new rpc::client("localhost", 8080);
+    RPCStartClient("localhost", 8080);
 
     auto fut = async(keepsend);
     fut.wait();
