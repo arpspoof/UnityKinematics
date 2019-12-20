@@ -11,6 +11,7 @@ if(NOT CMAKE_BUILD_TYPE)
         FORCE)
 endif()
 
+set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install" CACHE PATH "install prefix" FORCE)
 
 set(RPCLIB_INCLUDE_DIR "" CACHE PATH "rpclib include directory, usually /usr/local/include on linux")
 set(RPCLIB_LIBS_DIR "" CACHE PATH "rpclib library directory, usually /usr/local/lib on linux")
@@ -71,6 +72,23 @@ endfunction(createExecutable)
 set(LIBS librpc.a)
 set(SYS_LIBS pthread)
 
-createExecutable(client ${CLIENT_PATH} ${LIBS} ${SYS_LIBS})
-createExecutable(server ${SERVER_PATH} ${LIBS} ${SYS_LIBS})
+createLibrary(client ${CLIENT_PATH} ${LIBS} ${SYS_LIBS})
+createLibrary(server ${SERVER_PATH} ${LIBS} ${SYS_LIBS})
+
+set_target_properties(client PROPERTIES PUBLIC_HEADER 
+    "src/common/include/DataFormat.hpp;src/client/include/api/KinematicsClient.hpp"
+)
+set_target_properties(server PROPERTIES PUBLIC_HEADER 
+    "src/common/include/DataFormat.hpp;src/server/include/api/KinematicsServer.hpp"
+)
+
+INSTALL(TARGETS client 
+        LIBRARY DESTINATION KinematicsClient/lib
+        PUBLIC_HEADER DESTINATION include/KinematicsClient
+)
+INSTALL(TARGETS server 
+        LIBRARY DESTINATION KinematicsServer/lib
+        PUBLIC_HEADER DESTINATION include/KinematicsServer
+)
+
 
