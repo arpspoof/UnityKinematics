@@ -1,4 +1,4 @@
-#include "RPCServer.hpp"
+#include "api/KinematicsServer.hpp"
 
 #include <future>
 #include <thread>

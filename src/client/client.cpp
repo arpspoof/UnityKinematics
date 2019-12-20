@@ -1,10 +1,4 @@
-#include "AbstractDataProvider.hpp"
-#include "DataFormat.hpp"
-#include "RPCClient.hpp"
-
-#include <thread>
-#include <future>
-#include <chrono>
+#include "api/KinematicsClient.hpp"
 
 using namespace std;
 
@@ -26,8 +20,9 @@ class DataProvider : public AbstractDataProvider
     }
 };
 
-static void keepsend()
-{
+int main() {
+    RPCStartClient("localhost", 8080);
+
     DataProvider d;
     d.frequency = 10000;
     while(1)
@@ -35,13 +30,6 @@ static void keepsend()
         d.Tick(1000);
         x++;
     }
-}
-
-int main() {
-    RPCStartClient("localhost", 8080);
-
-    auto fut = async(keepsend);
-    fut.wait();
 
     return 0;
 }
