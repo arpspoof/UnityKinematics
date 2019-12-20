@@ -1,9 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
 
 set (CMAKE_CXX_STANDARD 14)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 project(UnityKinematics)
 
+if(NOT WIN32)
+  string(ASCII 27 Esc)
+  set(ColourReset "${Esc}[m")
+  set(BoldYellow  "${Esc}[1;33m")
+endif()
+message(NOTICE "${BoldYellow}Important Notice: Please build rpclib using CMAKE_POSITION_INDEPENDENT_CODE${ColourReset}")
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -13,8 +20,8 @@ endif()
 
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install" CACHE PATH "install prefix" FORCE)
 
-set(RPCLIB_INCLUDE_DIR "" CACHE PATH "rpclib include directory, usually /usr/local/include on linux")
-set(RPCLIB_LIBS_DIR "" CACHE PATH "rpclib library directory, usually /usr/local/lib on linux")
+set(RPCLIB_INCLUDE_DIR "/usr/local/include" CACHE PATH "rpclib include directory")
+set(RPCLIB_LIBS_DIR "/usr/local/lib" CACHE PATH "rpclib library directory")
 
 if (RPCLIB_INCLUDE_DIR STREQUAL "")
     message(FATAL_ERROR "No rpclib include directory specified")
@@ -92,10 +99,11 @@ INSTALL(TARGETS server
 )
 
 
+
 set(BUILD_UNITY_API ON CACHE BOOL "Choose whether unity interface should be built")
 if (${BUILD_UNITY_API})
 
-set(BUILD_UNITY_API_DIR "${CMAKE_BINARY_DIR}/UnityServerAPI")
+set(BUILD_UNITY_API_DIR "${CMAKE_BINARY_DIR}/UnityServerAPI" CACHE PATH "choose where to build unity server API")
 
 find_package(SWIG 4.0.1 REQUIRED)
 include(${SWIG_USE_FILE})
@@ -110,22 +118,33 @@ swig_add_library(UnityServerAPI
     SOURCES "${SERVER_PATH}/include/api/KinematicsServer.i"
 )
 
-swig_link_libraries(UnityServerAPI ${LIBS} ${SYS_LIBS})
+add_dependencies(UnityServerAPI server)
+
+swig_link_libraries(UnityServerAPI server ${LIBS} ${SYS_LIBS})
 
 add_custom_target(copy_server_so ALL
-    COMMAND cp -f "${CMAKE_BINARY_DIR}/UnityServerAPI.so" "${BUILD_UNITY_API_DIR}"
+    COMMAND cp -f "${CMAKE_BINARY_DIR}/UnityServerAPI.so" "${BUILD_UNITY_API_DIR}/UnityServerAPI"
 )
 
 add_dependencies(copy_server_so UnityServerAPI)
 
-file(GLOB_RECURSE TMP_SRC_UnityServerAPI
-    "${BUILD_UNITY_API_DIR}/*.cs"
-)
-set_target_properties(UnityServerAPI PROPERTIES PUBLIC_HEADER "${TMP_SRC_UnityServerAPI}")
+endif()
 
-INSTALL(TARGETS UnityServerAPI 
-        DESTINATION UnityServerAPI
-        PUBLIC_HEADER DESTINATION UnityServerAPI
-)
+
+
+set(BUILD_TEST_CODE ON CACHE BOOL "Choose whether to build test code")
+if (${BUILD_TEST_CODE})
+
+set(TEST_PATH "${SRC_PATH}/test")
+
+add_executable(testserver ${TEST_PATH}/server.cpp)
+target_link_libraries(testserver server ${LIBS} ${SYS_LIBS})
+target_compile_options(testserver PRIVATE -Wall -Wextra -pedantic -Werror -fPIC)
+add_dependencies(testserver server)
+
+add_executable(testclient ${TEST_PATH}/client.cpp)
+target_link_libraries(testclient client ${LIBS} ${SYS_LIBS})
+target_compile_options(testclient PRIVATE -Wall -Wextra -pedantic -Werror -fPIC)
+add_dependencies(testclient client)
 
 endif()
