@@ -92,3 +92,40 @@ INSTALL(TARGETS server
 )
 
 
+set(BUILD_UNITY_API ON CACHE BOOL "Choose whether unity interface should be built")
+if (${BUILD_UNITY_API})
+
+set(BUILD_UNITY_API_DIR "${CMAKE_BINARY_DIR}/UnityServerAPI")
+
+find_package(SWIG 4.0.1 REQUIRED)
+include(${SWIG_USE_FILE})
+
+set_source_files_properties("${SERVER_PATH}/include/api/KinematicsServer.i" PROPERTIES CPLUSPLUS ON)
+
+swig_add_library(UnityServerAPI 
+    LANGUAGE csharp 	
+    TYPE MODULE
+    OUTPUT_DIR "${BUILD_UNITY_API_DIR}"
+    OUTFILE_DIR "${CMAKE_BINARY_DIR}/_cstemp"
+    SOURCES "${SERVER_PATH}/include/api/KinematicsServer.i"
+)
+
+swig_link_libraries(UnityServerAPI ${LIBS} ${SYS_LIBS})
+
+add_custom_target(copy_server_so ALL
+    COMMAND cp -f "${CMAKE_BINARY_DIR}/UnityServerAPI.so" "${BUILD_UNITY_API_DIR}"
+)
+
+add_dependencies(copy_server_so UnityServerAPI)
+
+file(GLOB_RECURSE TMP_SRC_UnityServerAPI
+    "${BUILD_UNITY_API_DIR}/*.cs"
+)
+set_target_properties(UnityServerAPI PROPERTIES PUBLIC_HEADER "${TMP_SRC_UnityServerAPI}")
+
+INSTALL(TARGETS UnityServerAPI 
+        DESTINATION UnityServerAPI
+        PUBLIC_HEADER DESTINATION UnityServerAPI
+)
+
+endif()
