@@ -5,36 +5,36 @@
 %include "std_vector.i"
 %include "std_string.i"
 
-struct Vec3 
+struct PackVec3 
 {
     float x, y, z;
-    Vec3() :x(0), y(0), z(0) {}
-    Vec3(float x, float y, float z) :x(x), y(y), z(z) {}
+    PackVec3() :x(0), y(0), z(0) {}
+    PackVec3(float x, float y, float z) :x(x), y(y), z(z) {}
 };
 
-struct Quat
+struct PackQuat
 {
     float w, x, y, z;
-    Quat() :w(1), x(0), y(0), z(0) {}
-    Quat(float w, float x, float y, float z) :w(w), x(x), y(y), z(z) {}
+    PackQuat() :w(1), x(0), y(0), z(0) {}
+    PackQuat(float w, float x, float y, float z) :w(w), x(x), y(y), z(z) {}
 };
 
-struct Transform
+struct PackTransform
 {
-    Vec3 p;
-    Quat q;
-    Transform() {}
-    Transform(Vec3 p, Quat q) :p(p), q(q) {}
-    Transform(float x, float y, float z, float qw, float qx, float qy, float qz) 
-        :p(Vec3(x, y, z)), q(Quat(qw, qx, qy, qz)) {}    
+    PackVec3 p;
+    PackQuat q;
+    PackTransform() {}
+    PackTransform(PackVec3 p, PackQuat q) :p(p), q(q) {}
+    PackTransform(float x, float y, float z, float qw, float qx, float qy, float qz) 
+        :p(PackVec3(x, y, z)), q(PackQuat(qw, qx, qy, qz)) {}    
 };
 
 struct ObjectState
 {
     std::string objectName;
-    Transform transform;
+    PackTransform transform;
     ObjectState() {}
-    ObjectState(std::string objectName, Transform transform) :objectName(objectName), transform(transform) {}
+    ObjectState(std::string objectName, PackTransform transform) :objectName(objectName), transform(transform) {}
 };
 
 namespace std {

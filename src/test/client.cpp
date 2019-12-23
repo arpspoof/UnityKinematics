@@ -8,8 +8,8 @@ class DataProvider : public AbstractDataProvider
 {
     virtual FrameState GetCurrentState() const override
     {
-        ObjectState obj1("asd", Transform(x, 2, 3, 4, 5, 6, 7));
-        ObjectState obj2("zxc", Transform(x+1, 12, 13, 14, 15, 16, 17));
+        ObjectState obj1("asd", PackTransform(x, 2, 3, 4, 5, 6, 7));
+        ObjectState obj2("zxc", PackTransform(x+1, 12, 13, 14, 15, 16, 17));
         x+=2;
 
         FrameState frame("test");
