@@ -11,7 +11,7 @@ static FrameBuffer* rpc_buffer = nullptr;
 static int createFrame(FrameState frameState)
 {
     rpc_buffer->Write(frameState);
-    return 0;
+    return rpc_buffer->GetNumOfAvailableElements();
 }
 
 void RPCStart(unsigned short port)

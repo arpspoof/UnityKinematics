@@ -24,7 +24,7 @@ int main() {
     RPCStartClient("localhost", 8080);
 
     DataProvider d;
-    d.frequency = 10000;
+    d.frequency = 1000;
     while(1)
     {
         d.Tick(1000);

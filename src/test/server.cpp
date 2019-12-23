@@ -21,11 +21,15 @@ static void check()
     while(1)
     {
         int n = buffer->GetNumOfAvailableElements();
-        for (int i = 0; i < n; i++) {
+     /*   for (int i = 0; i < n; i++) {
             printf("frame (%d/%d)\n", i, n);
             printFrame(buffer->ReadAndErase(0));
+        }*/
+        if (n > 0) {
+            printf("frame (%d/%d)\n", 0, 1);
+            printFrame(buffer->ReadAndErase(0));
         }
-        this_thread::sleep_for(chrono::milliseconds(2000));
+        this_thread::sleep_for(chrono::milliseconds(500));
     }
 }
 

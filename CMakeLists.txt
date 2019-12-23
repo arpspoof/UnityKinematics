@@ -123,7 +123,7 @@ add_dependencies(UnityServerAPI server)
 swig_link_libraries(UnityServerAPI server ${LIBS} ${SYS_LIBS})
 
 add_custom_target(copy_server_so ALL
-    COMMAND cp -f "${CMAKE_BINARY_DIR}/UnityServerAPI.so" "${BUILD_UNITY_API_DIR}/UnityServerAPI"
+    COMMAND cp -f "${CMAKE_BINARY_DIR}/UnityServerAPI.so" "${BUILD_UNITY_API_DIR}/UnityServerAPI.so"
 )
 
 add_dependencies(copy_server_so UnityServerAPI)

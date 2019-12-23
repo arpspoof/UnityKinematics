@@ -23,7 +23,12 @@ void AbstractDataProvider::Tick(int slots)
     }
 
     if (slotCounter >= frequency || slotCounter < 0) {
-        RPCGetClient()->call("createFrame", GetCurrentState());
+        int bufferedFrames = RPCGetClient()->call("createFrame", GetCurrentState()).as<int>();
+
+        int sleepDuration = (int)((bufferedFrames / 2) * frequency / 6.0);
+        if (sleepDuration > 0) {
+            this_thread::sleep_for(milliseconds(sleepDuration));
+        }
 
         if (slotCounter >= frequency) {
             slotCounter -= frequency;
