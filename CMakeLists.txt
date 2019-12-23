@@ -113,7 +113,7 @@ set_source_files_properties("${SERVER_PATH}/include/api/KinematicsServer.i" PROP
 swig_add_library(UnityServerAPI 
     LANGUAGE csharp 	
     TYPE MODULE
-    OUTPUT_DIR "${BUILD_UNITY_API_DIR}"
+    OUTPUT_DIR "${BUILD_UNITY_API_DIR}/src"
     OUTFILE_DIR "${CMAKE_BINARY_DIR}/_cstemp"
     SOURCES "${SERVER_PATH}/include/api/KinematicsServer.i"
 )
@@ -122,11 +122,12 @@ add_dependencies(UnityServerAPI server)
 
 swig_link_libraries(UnityServerAPI server ${LIBS} ${SYS_LIBS})
 
-add_custom_target(copy_server_so ALL
+add_custom_target(build_server_dll ALL
     COMMAND cp -f "${CMAKE_BINARY_DIR}/UnityServerAPI.so" "${BUILD_UNITY_API_DIR}/UnityServerAPI.so"
+    COMMAND mcs -out:${BUILD_UNITY_API_DIR}/api.dll -pkg:dotnet -target:library ${BUILD_UNITY_API_DIR}/src/*.cs
 )
 
-add_dependencies(copy_server_so UnityServerAPI)
+add_dependencies(build_server_dll UnityServerAPI)
 
 endif()
 

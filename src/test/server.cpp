@@ -11,7 +11,7 @@ static void printFrame(FrameState frameState)
     printf("receive frame, nObj = %ld:\n", frameState.objectStates.size());
     printf("session name = %s\n", frameState.sessionName.c_str());
     for (auto& obj : frameState.objectStates) {
-        printf("obj: p = %f\n", obj.transform.p.x);
+        printf("obj: p = %f\n", obj.x);
     }
 }
 
