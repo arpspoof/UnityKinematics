@@ -20,15 +20,3 @@ struct Command
     Command();
     Command(std::string name);
 };
-
-%feature("director") AbstractCommandHandler;
-
-class AbstractCommandHandler
-{
-public:
-    virtual ~AbstractCommandHandler();
-    virtual int HandleCommand(Command cmd) = 0;
-};
-
-AbstractCommandHandler* GetCommandHandler();
-void SetCommandHandler(AbstractCommandHandler* handler);

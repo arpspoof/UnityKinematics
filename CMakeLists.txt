@@ -79,9 +79,9 @@ endfunction(createExecutable)
 set(LIBS librpc.a)
 set(SYS_LIBS pthread)
 
-createLibrary(common ${COMMON_PATH} ${LIBS} ${SYS_LIBS})
-createLibrary(client ${CLIENT_PATH} common ${LIBS} ${SYS_LIBS})
-createLibrary(server ${SERVER_PATH} common ${LIBS} ${SYS_LIBS})
+#createLibrary(common ${COMMON_PATH} ${LIBS} ${SYS_LIBS})
+createLibrary(client ${CLIENT_PATH} ${LIBS} ${SYS_LIBS})
+createLibrary(server ${SERVER_PATH} ${LIBS} ${SYS_LIBS})
 
 set_target_properties(client PROPERTIES PUBLIC_HEADER 
     "src/common/include/DataFormat.hpp;src/client/include/api/KinematicsClient.hpp"

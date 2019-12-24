@@ -1,8 +1,11 @@
 #pragma once
 
-#include "FrameBuffer.hpp"
+#include "ActorBuffer.hpp"
+#include "DataFormat.hpp"
+#include "Command.hpp"
 
 void RPCStart(unsigned short port);
 void RPCStop();
 
-FrameBuffer* RPCGetBuffer();
+ActorBuffer<FrameState>* RPCGetFrameBuffer();
+ActorBuffer<Command>* RPCGetCommandBuffer();

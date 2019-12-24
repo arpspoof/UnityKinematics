@@ -17,7 +17,7 @@ static void printFrame(FrameState frameState)
 
 static void check()
 {
-    auto buffer = RPCGetBuffer();
+    auto buffer = RPCGetFrameBuffer();
     while(1)
     {
         int n = buffer->GetNumOfAvailableElements();

@@ -5,6 +5,6 @@
 %}
 
 %include "DataFormat.i"
-%include "FrameBuffer.i"
-%include "RPCServer.i"
 %include "Command.i"
+%include "ActorBuffer.i"
+%include "RPCServer.i"

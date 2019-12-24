@@ -1,33 +1,29 @@
 #include "RPCServer.hpp"
-#include "DataFormat.hpp"
-#include "Command.hpp"
-
 #include <rpc/server.h>
 
 using namespace std;
 
 static rpc::server* rpc_server = nullptr;
-static FrameBuffer* rpc_buffer = nullptr;
+static ActorBuffer<FrameState>* frame_buffer = nullptr;
+static ActorBuffer<Command>* cmd_buffer = nullptr;
 
 static int createFrame(FrameState frameState)
 {
-    rpc_buffer->Write(frameState);
-    return rpc_buffer->GetNumOfAvailableElements();
+    frame_buffer->Write(frameState);
+    return frame_buffer->GetNumOfAvailableElements();
 }
 
 static int command(Command cmd)
 {
-    auto handler = GetCommandHandler();
-    if (handler) {
-        handler->HandleCommand(cmd);
-    }
-    return 0;
+    cmd_buffer->Write(cmd);
+    return cmd_buffer->GetNumOfAvailableElements();
 }
 
 void RPCStart(unsigned short port)
 {
     printf("starting rpc server ...\n");
-    rpc_buffer = new FrameBuffer();
+    frame_buffer = new ActorBuffer<FrameState>();
+    cmd_buffer = new ActorBuffer<Command>();
     rpc_server = new rpc::server(port);
     rpc_server->bind("createFrame", &createFrame);
     rpc_server->bind("command", &command);
@@ -39,12 +35,19 @@ void RPCStop()
     printf("stopping rpc server ...\n");
     rpc_server->stop();
     delete rpc_server;
-    delete rpc_buffer;
+    delete frame_buffer;
+    delete cmd_buffer;
     rpc_server = nullptr;
-    rpc_buffer = nullptr;
+    frame_buffer = nullptr;
+    cmd_buffer = nullptr;
 }
 
-FrameBuffer* RPCGetBuffer()
+ActorBuffer<FrameState>* RPCGetFrameBuffer()
 {
-    return rpc_buffer;
+    return frame_buffer;
+}
+
+ActorBuffer<Command>* RPCGetCommandBuffer()
+{
+    return cmd_buffer;
 }
