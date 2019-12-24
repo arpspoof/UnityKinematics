@@ -1,5 +1,6 @@
 #include "RPCServer.hpp"
 #include "DataFormat.hpp"
+#include "Command.hpp"
 
 #include <rpc/server.h>
 
@@ -14,12 +15,22 @@ static int createFrame(FrameState frameState)
     return rpc_buffer->GetNumOfAvailableElements();
 }
 
+static int command(Command cmd)
+{
+    auto handler = GetCommandHandler();
+    if (handler) {
+        handler->HandleCommand(cmd);
+    }
+    return 0;
+}
+
 void RPCStart(unsigned short port)
 {
     printf("starting rpc server ...\n");
     rpc_buffer = new FrameBuffer();
     rpc_server = new rpc::server(port);
     rpc_server->bind("createFrame", &createFrame);
+    rpc_server->bind("command", &command);
     rpc_server->async_run();
 }
 

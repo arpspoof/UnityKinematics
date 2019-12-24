@@ -2,8 +2,7 @@
 
 #include <string>
 
+#include "Command.hpp"
+#include "RPCClient.hpp"
 #include "DataFormat.hpp"
 #include "AbstractDataProvider.hpp"
-
-void RPCStartClient(const std::string& addr, unsigned short port);
-void RPCStopClient();

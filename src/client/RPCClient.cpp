@@ -20,7 +20,12 @@ void RPCStopClient()
     rpc_client = nullptr;
 }
 
-rpc::client* RPCGetClient()
+int CreateFrame(FrameState frame)
 {
-    return rpc_client;
+    return rpc_client->call("createFrame", frame).as<int>();
+}
+
+int SendCommand(Command cmd)
+{
+    return rpc_client->call("command", cmd).as<int>();
 }
