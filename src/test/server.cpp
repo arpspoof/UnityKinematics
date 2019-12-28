@@ -28,6 +28,8 @@ static void check()
         if (n > 0) {
             printf("frame (%d/%d)\n", 0, 1);
             printFrame(buffer->ReadAndErase(0));
+            Command cmd("argrdhg");
+            SendCommand(cmd);
         }
         this_thread::sleep_for(chrono::milliseconds(500));
     }
@@ -35,13 +37,13 @@ static void check()
 
 int main() 
 {
-    RPCStart(8080);
+    RPCStartServer(8080);
 
     auto fut = async(check);
     fut.wait();
 
     while (getchar() != 'q') {;}
-    RPCStop();
+    RPCStopServer();
 
     return 0;
 }

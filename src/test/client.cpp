@@ -32,7 +32,7 @@ class DataProvider : public AbstractDataProvider
 };
 
 int main() {
-    RPCStartClient("localhost", 8080);
+    RPCStartClient("localhost", 8080, "142.58.21.58", 8081);
 
     DataProvider d;
     d.frequency = 100;
@@ -65,6 +65,11 @@ int main() {
     while(1)
     {
         d.Tick(100);
+        auto cmdbuffer = RPCGetCommandBuffer();
+        if (cmdbuffer->GetNumOfAvailableElements() > 0) {
+            auto cmd = cmdbuffer->ReadAndErase(0);
+            printf("recv cmd : %s\n", cmd.name.c_str());
+        }
     }
 
     return 0;
