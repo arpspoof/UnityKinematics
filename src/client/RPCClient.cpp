@@ -13,7 +13,6 @@ static ActorBuffer<Command>* cmd_buffer = nullptr;
 
 static int command(Command cmd)
 {
-    printf("client recv cmd\n");
     cmd_buffer->Write(cmd);
     return cmd_buffer->GetNumOfAvailableElements();
 }

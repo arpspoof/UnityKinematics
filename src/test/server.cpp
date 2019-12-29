@@ -15,6 +15,8 @@ static void printFrame(FrameState frameState)
     }
 }
 
+int x = 0;
+
 static void check()
 {
     auto buffer = RPCGetFrameBuffer();
@@ -26,12 +28,16 @@ static void check()
             printFrame(buffer->ReadAndErase(0));
         }*/
         if (n > 0) {
+            x++;
             printf("frame (%d/%d)\n", 0, 1);
             printFrame(buffer->ReadAndErase(0));
-            Command cmd("argrdhg");
-            SendCommand(cmd);
+        /*    if (x == 100 || x == 250) {
+                Command cmd("_sys_key");
+                cmd.ps.push_back("Space");
+                SendCommand(cmd);
+            }*/
         }
-        this_thread::sleep_for(chrono::milliseconds(500));
+        this_thread::sleep_for(chrono::milliseconds(16));
     }
 }
 

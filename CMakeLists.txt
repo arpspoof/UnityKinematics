@@ -84,10 +84,10 @@ createLibrary(client ${CLIENT_PATH} ${LIBS} ${SYS_LIBS})
 createLibrary(server ${SERVER_PATH} ${LIBS} ${SYS_LIBS})
 
 set_target_properties(client PROPERTIES PUBLIC_HEADER 
-    "src/common/include/DataFormat.hpp;src/common/include/Command.hpp;src/client/include/api/KinematicsClient.hpp;src/client/include/RPCClient.hpp;src/client/include/AbstractDataProvider.hpp"
+    "src/common/include/DataFormat.hpp;src/common/include/ActorBuffer.hpp;src/common/include/Command.hpp;src/client/include/api/KinematicsClient.hpp;src/client/include/RPCClient.hpp;src/client/include/AbstractDataProvider.hpp"
 )
 set_target_properties(server PROPERTIES PUBLIC_HEADER 
-    "src/common/include/DataFormat.hpp;src/common/include/Command.hpp;src/server/include/api/KinematicsServer.hpp"
+    "src/common/include/DataFormat.hpp;src/common/include/ActorBuffer.hpp;src/common/include/Command.hpp;src/server/include/api/KinematicsServer.hpp"
 )
 
 INSTALL(TARGETS client 

@@ -1,24 +1,33 @@
 #pragma once
 
+#include "Command.hpp"
 #include "DataFormat.hpp"
+
 #include <chrono>
 
 class AbstractDataProvider
 {
-    std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
-    int slotCounter;
+    int physicalFPS;
+    int frameCounter;
+    int skipRate;
+
+    bool paused;
 
 public:
-    // 1 slot = 1/6 milliseconds
-    // frequency = slots / update 
-    // e.g. 60Hz = 100 slots / update 
-    int frequency;
-    
-    void Tick(int slots);
+    void SetPhysicalFPS(int physicalFPS);
+    void Tick();
 
-    AbstractDataProvider();
+    AbstractDataProvider(int physicalFPS = 60);
     virtual ~AbstractDataProvider();
+
+private:
+    void PollCommand();
+    void HandleSystemCommand(Command& cmd);
+
+    void Sleep(int64_t ms);
+    void Pause();
 
 public: // Abstract
     virtual FrameState GetCurrentState() const = 0;
+    virtual void HandleCommand(Command& cmd) const = 0;
 };

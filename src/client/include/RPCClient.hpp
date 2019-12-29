@@ -12,4 +12,5 @@ void RPCStopClient();
 int CreateFrame(FrameState frame);
 int SendCommand(Command cmd);
 
+// non-API
 ActorBuffer<Command>* RPCGetCommandBuffer();

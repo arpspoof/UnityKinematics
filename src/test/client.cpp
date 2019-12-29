@@ -29,13 +29,18 @@ class DataProvider : public AbstractDataProvider
 
         return frame;
     }   
+
+    virtual void HandleCommand(Command& cmd) const override
+    {
+        printf("cls recv cmd: %s\n", cmd.name.c_str());
+    }
 };
 
 int main() {
     RPCStartClient("localhost", 8080, "142.58.21.58", 8081);
 
     DataProvider d;
-    d.frequency = 100;
+    d.SetPhysicalFPS(1200);
 
     Command cmd1;
     cmd1.name = "_sys_create_primitive";
@@ -64,12 +69,7 @@ int main() {
 
     while(1)
     {
-        d.Tick(100);
-        auto cmdbuffer = RPCGetCommandBuffer();
-        if (cmdbuffer->GetNumOfAvailableElements() > 0) {
-            auto cmd = cmdbuffer->ReadAndErase(0);
-            printf("recv cmd : %s\n", cmd.name.c_str());
-        }
+        d.Tick();
     }
 
     return 0;
