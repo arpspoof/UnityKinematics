@@ -145,11 +145,11 @@ string(REPLACE / \\ CMAKE_BINARY_DIR_RV ${CMAKE_BINARY_DIR})
 add_custom_target(build_server_dll ALL
     COMMAND cd ${CMAKE_BINARY_DIR}/_csbuild
     COMMAND ${CSC} -out:api.dll -target:library *.cs
-    COMMAND rd /s /q ${BUILD_UNITY_ASSETS_DIR_RV}
+    COMMAND (if exist ${BUILD_UNITY_ASSETS_DIR_RV} rd /s /q ${BUILD_UNITY_ASSETS_DIR_RV})
     COMMAND mkdir ${BUILD_UNITY_ASSETS_DIR_RV}\\Scripts\\API
-    COMMAND xcopy /s ${SRC_PATH_RV}\\unity\\*.* ${BUILD_UNITY_ASSETS_DIR_RV}
-    COMMAND xcopy /s ${CMAKE_BINARY_DIR_RV}\\_csbuild\\api.dll ${BUILD_UNITY_ASSETS_DIR_RV}\\Scripts\\API
-    COMMAND xcopy ${CMAKE_BINARY_DIR_RV}\\UnityServerAPI.dll ${BUILD_UNITY_ASSETS_DIR_RV}\\Scripts\\API
+    COMMAND xcopy /Y /s ${SRC_PATH_RV}\\unity\\*.* ${BUILD_UNITY_ASSETS_DIR_RV}
+    COMMAND xcopy /Y /s ${CMAKE_BINARY_DIR_RV}\\_csbuild\\api.dll ${BUILD_UNITY_ASSETS_DIR_RV}\\Scripts\\API
+    COMMAND xcopy /Y ${CMAKE_BINARY_DIR_RV}\\UnityServerAPI.dll ${BUILD_UNITY_ASSETS_DIR_RV}\\Scripts\\API
 )
 else()
 add_custom_target(build_server_dll ALL
@@ -203,7 +203,7 @@ if(WIN32)
 string(REPLACE / \\ CMAKE_BINARY_DIR_RV ${CMAKE_BINARY_DIR})
 string(REPLACE / \\ BUILD_CLIENT_PY_API_DIR_RV ${BUILD_CLIENT_PY_API_DIR})
 add_custom_target(copy_client_dll ALL
-    COMMAND xcopy ${CMAKE_BINARY_DIR_RV}\\_pyUnityRenderer.pyd ${BUILD_CLIENT_PY_API_DIR_RV}
+    COMMAND xcopy /Y ${CMAKE_BINARY_DIR_RV}\\_pyUnityRenderer.pyd ${BUILD_CLIENT_PY_API_DIR_RV}
 )
 else()
 add_custom_target(copy_client_dll ALL
