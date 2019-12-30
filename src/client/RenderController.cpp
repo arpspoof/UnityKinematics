@@ -118,8 +118,7 @@ void Tick(float physicalTimeStep)
     timeAccumulator += physicalTimeStep;
     if (timeAccumulator >= 1.0 / physicalFPS) {
         timeAccumulator = 0;
-        FrameState frameState;
-        dataProvider->GetCurrentState(frameState);
+        FrameState frameState = dataProvider->GetCurrentState();
         int bufferedFrames = CreateFrame(frameState);
         if (bufferedFrames > 10) {
             int sleepDuration = bufferedFrames * 15;

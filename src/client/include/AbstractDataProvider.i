@@ -1,6 +1,8 @@
-#pragma once
+%{
+    #include "AbstractDataProvider.hpp"
+%}
 
-#include "DataFormat.hpp"
+%feature("director") AbstractDataProvider;
 
 class AbstractDataProvider
 {

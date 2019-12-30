@@ -1,6 +1,8 @@
-#pragma once
+%{
+    #include "AbstractCommandHandler.hpp"
+%}
 
-#include "Command.hpp"
+%feature("director") AbstractCommandHandler;
 
 class AbstractCommandHandler
 {

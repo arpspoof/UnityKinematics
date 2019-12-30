@@ -134,3 +134,39 @@ add_custom_target(build_server_dll ALL
 add_dependencies(build_server_dll UnityServerAPI)
 
 endif()
+
+
+
+set(BUILD_CLIENT_PY_API ON CACHE BOOL "Choose whether to build python binding of unity renderer client API")
+if (${BUILD_CLIENT_PY_API})
+
+set(BUILD_CLIENT_PY_API_DIR "${CMAKE_BINARY_DIR}/pyUnityRenderer" CACHE PATH "choose where to build python client API")
+
+find_package(PythonLibs 3.7.4 REQUIRED)
+find_package(PythonInterp ${PYTHONLIBS_VERSION_STRING} REQUIRED)
+
+include_directories(${PYTHON_INCLUDE_PATH})
+
+find_package(SWIG 4.0.1 REQUIRED)
+include(${SWIG_USE_FILE})
+
+set_source_files_properties("${CLIENT_PATH}/include/api/KinematicsClient.i" PROPERTIES CPLUSPLUS ON)
+
+swig_add_library(pyUnityRenderer 
+    LANGUAGE python
+    OUTPUT_DIR "${BUILD_CLIENT_PY_API_DIR}"
+    OUTFILE_DIR "${CMAKE_BINARY_DIR}/_pytemp"
+    SOURCES "${CLIENT_PATH}/include/api/KinematicsClient.i"
+)
+
+add_dependencies(pyUnityRenderer client)
+
+swig_link_libraries(pyUnityRenderer client ${LIBS} ${SYS_LIBS})
+
+add_custom_target(copy_client_dll ALL
+    COMMAND cp -f ${CMAKE_BINARY_DIR}/_pyUnityRenderer.so ${BUILD_CLIENT_PY_API_DIR}
+)
+
+add_dependencies(copy_client_dll pyUnityRenderer)
+
+endif()
