@@ -131,22 +131,3 @@ add_custom_target(build_server_dll ALL
 add_dependencies(build_server_dll UnityServerAPI)
 
 endif()
-
-
-
-set(BUILD_TEST_CODE OFF CACHE BOOL "Choose whether to build test code")
-if (${BUILD_TEST_CODE})
-
-set(TEST_PATH "${SRC_PATH}/test")
-
-add_executable(testserver ${TEST_PATH}/server.cpp)
-target_link_libraries(testserver server ${LIBS} ${SYS_LIBS})
-target_compile_options(testserver PRIVATE -Wall -Wextra -pedantic -Werror -fPIC)
-add_dependencies(testserver server)
-
-add_executable(testclient ${TEST_PATH}/client.cpp)
-target_link_libraries(testclient client ${LIBS} ${SYS_LIBS})
-target_compile_options(testclient PRIVATE -Wall -Wextra -pedantic -Werror -fPIC)
-add_dependencies(testclient client)
-
-endif()
