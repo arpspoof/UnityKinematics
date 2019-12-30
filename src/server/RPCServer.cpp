@@ -16,6 +16,7 @@ static void RPCStartCommandSender(const std::string& addr, unsigned short port)
 {
     printf("starting command sender ...\n");
     rpc_client = new rpc::client(addr, port);
+    rpc_client->set_timeout(500);
 }
 
 static void RPCStopCommandSender()
@@ -82,6 +83,10 @@ ActorBuffer<Command>* RPCGetCommandBuffer()
 
 int SendCommand(Command cmd)
 {
-    printf("sendign mcd ...\n");
-    return rpc_client->call("command", cmd).as<int>();
+    try {
+        return rpc_client->call("command", cmd).as<int>();
+    }
+    catch (...) {
+        return -1;
+    }
 }
