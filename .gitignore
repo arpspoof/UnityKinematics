@@ -1,4 +1,7 @@
 [Bb]uild/
 [Dd]ebug/
 [Ii]nstall/
+[Oo]ut/
 .vscode/
+.vs/
+CMakeSettings.json

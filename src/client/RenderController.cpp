@@ -90,7 +90,7 @@ static void PollCommand()
     }
 }
 
-static void Sleep(int64_t ms)
+static void SleepFor(int64_t ms)
 {
     while (ms >= 10) {
         PollCommand();
@@ -122,7 +122,7 @@ void Tick(float physicalTimeStep)
         int bufferedFrames = CreateFrame(frameState);
         if (bufferedFrames > 10) {
             int sleepDuration = bufferedFrames * 15;
-            Sleep(sleepDuration);
+            SleepFor(sleepDuration);
         }
     }
 }

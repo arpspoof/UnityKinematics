@@ -6,11 +6,11 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 project(UnityKinematics)
 
 if(NOT WIN32)
-  string(ASCII 27 Esc)
-  set(ColourReset "${Esc}[m")
-  set(BoldYellow  "${Esc}[1;33m")
+    string(ASCII 27 Esc)
+    set(ColourReset "${Esc}[m")
+    set(BoldYellow  "${Esc}[1;33m")
+    message(NOTICE "${BoldYellow}Important Notice: Please build rpclib using CMAKE_POSITION_INDEPENDENT_CODE${ColourReset}")
 endif()
-message(NOTICE "${BoldYellow}Important Notice: Please build rpclib using CMAKE_POSITION_INDEPENDENT_CODE${ColourReset}")
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -61,7 +61,11 @@ function(createLibrary varName varSrcPath)
     )
     add_library(${varName} ${TMP_SRC})
     target_link_libraries(${varName} ${ARGN})
+if(WIN32)
+    target_compile_options(${varName} PRIVATE -Wall -pedantic -fPIC)
+else()
     target_compile_options(${varName} PRIVATE -Wall -Wextra -pedantic -Werror -fPIC)
+endif()
 endfunction(createLibrary)
 
 function(createExecutable varName varSrcPath)
@@ -72,12 +76,21 @@ function(createExecutable varName varSrcPath)
     )
     add_executable(${varName} ${TMP_SRC})
     target_link_libraries(${varName} ${ARGN})
+if(WIN32)
+    target_compile_options(${varName} PRIVATE -Wall -pedantic -fPIC)
+else()
     target_compile_options(${varName} PRIVATE -Wall -Wextra -pedantic -Werror -fPIC)
+endif()
 endfunction(createExecutable)
 
 
-set(LIBS librpc.a)
+set(LIBS rpc)
+
+if(WIN32)
+set(SYS_LIBS )
+else()
 set(SYS_LIBS pthread)
+endif()
 
 #createLibrary(common ${COMMON_PATH} ${LIBS} ${SYS_LIBS})
 createLibrary(client ${CLIENT_PATH} ${LIBS} ${SYS_LIBS})
@@ -123,6 +136,22 @@ add_dependencies(UnityServerAPI server)
 
 swig_link_libraries(UnityServerAPI server ${LIBS} ${SYS_LIBS})
 
+if(WIN32)
+set(CSC_PATH "C:/Windows/Microsoft.NET/Framework64/v4.0.30319" CACHE PATH "Path to Windows C# compiler (csc.exe)")
+set(CSC ${CSC_PATH}/csc.exe)
+string(REPLACE / \\ BUILD_UNITY_ASSETS_DIR_RV ${BUILD_UNITY_ASSETS_DIR})
+string(REPLACE / \\ SRC_PATH_RV ${SRC_PATH})
+string(REPLACE / \\ CMAKE_BINARY_DIR_RV ${CMAKE_BINARY_DIR})
+add_custom_target(build_server_dll ALL
+    COMMAND cd ${CMAKE_BINARY_DIR}/_csbuild
+    COMMAND ${CSC} -out:api.dll -target:library *.cs
+    COMMAND rd /s /q ${BUILD_UNITY_ASSETS_DIR_RV}
+    COMMAND mkdir ${BUILD_UNITY_ASSETS_DIR_RV}\\Scripts\\API
+    COMMAND xcopy /s ${SRC_PATH_RV}\\unity\\*.* ${BUILD_UNITY_ASSETS_DIR_RV}
+    COMMAND xcopy /s ${CMAKE_BINARY_DIR_RV}\\_csbuild\\api.dll ${BUILD_UNITY_ASSETS_DIR_RV}\\Scripts\\API
+    COMMAND xcopy ${CMAKE_BINARY_DIR_RV}\\UnityServerAPI.dll ${BUILD_UNITY_ASSETS_DIR_RV}\\Scripts\\API
+)
+else()
 add_custom_target(build_server_dll ALL
     COMMAND mcs -out:${CMAKE_BINARY_DIR}/_csbuild/api.dll -pkg:dotnet -target:library ${CMAKE_BINARY_DIR}/_csbuild/*.cs
     COMMAND mkdir -p ${BUILD_UNITY_ASSETS_DIR}
@@ -130,6 +159,7 @@ add_custom_target(build_server_dll ALL
     COMMAND mkdir -p ${BUILD_UNITY_ASSETS_DIR}/Scripts/API
     COMMAND cp -f ${CMAKE_BINARY_DIR}/UnityServerAPI.so ${CMAKE_BINARY_DIR}/_csbuild/api.dll ${BUILD_UNITY_ASSETS_DIR}/Scripts/API/
 )
+endif()
 
 add_dependencies(build_server_dll UnityServerAPI)
 
@@ -142,10 +172,16 @@ if (${BUILD_CLIENT_PY_API})
 
 set(BUILD_CLIENT_PY_API_DIR "${CMAKE_BINARY_DIR}/pyUnityRenderer" CACHE PATH "choose where to build python client API")
 
+if(WIN32)
+set(PYTHON_INCLUDE_PATH "" CACHE PATH "Python include dir, usually C:/Users/xx/AppData/Local/Programs/Python/Python37/include")
+set(PYTHON_LIB "" CACHE PATH "Python lib dir, usually C:/Users/xx/AppData/Local/Programs/Python/Python37/libs")
+else()
 find_package(PythonLibs 3.7.4 REQUIRED)
 find_package(PythonInterp ${PYTHONLIBS_VERSION_STRING} REQUIRED)
+endif()
 
 include_directories(${PYTHON_INCLUDE_PATH})
+link_directories(${PYTHON_LIB})
 
 find_package(SWIG 4.0.1 REQUIRED)
 include(${SWIG_USE_FILE})
@@ -163,9 +199,17 @@ add_dependencies(pyUnityRenderer client)
 
 swig_link_libraries(pyUnityRenderer client ${LIBS} ${SYS_LIBS})
 
+if(WIN32)
+string(REPLACE / \\ CMAKE_BINARY_DIR_RV ${CMAKE_BINARY_DIR})
+string(REPLACE / \\ BUILD_CLIENT_PY_API_DIR_RV ${BUILD_CLIENT_PY_API_DIR})
+add_custom_target(copy_client_dll ALL
+    COMMAND xcopy ${CMAKE_BINARY_DIR_RV}\\_pyUnityRenderer.pyd ${BUILD_CLIENT_PY_API_DIR_RV}
+)
+else()
 add_custom_target(copy_client_dll ALL
     COMMAND cp -f ${CMAKE_BINARY_DIR}/_pyUnityRenderer.so ${BUILD_CLIENT_PY_API_DIR}
 )
+endif()
 
 add_dependencies(copy_client_dll pyUnityRenderer)
 
