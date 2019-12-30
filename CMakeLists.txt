@@ -101,10 +101,10 @@ INSTALL(TARGETS server
 
 
 
-set(BUILD_UNITY_API ON CACHE BOOL "Choose whether unity interface should be built")
-if (${BUILD_UNITY_API})
+set(BUILD_UNITY_ASSETS ON CACHE BOOL "Choose whether unity assets should be built")
+if (${BUILD_UNITY_ASSETS})
 
-set(BUILD_UNITY_API_DIR "${CMAKE_BINARY_DIR}/UnityServerAPI" CACHE PATH "choose where to build unity server API")
+set(BUILD_UNITY_ASSETS_DIR "${CMAKE_BINARY_DIR}/Assets" CACHE PATH "choose where to build unity assets")
 
 find_package(SWIG 4.0.1 REQUIRED)
 include(${SWIG_USE_FILE})
@@ -114,7 +114,7 @@ set_source_files_properties("${SERVER_PATH}/include/api/KinematicsServer.i" PROP
 swig_add_library(UnityServerAPI 
     LANGUAGE csharp 	
     TYPE MODULE
-    OUTPUT_DIR "${BUILD_UNITY_API_DIR}/src"
+    OUTPUT_DIR "${CMAKE_BINARY_DIR}/_csbuild"
     OUTFILE_DIR "${CMAKE_BINARY_DIR}/_cstemp"
     SOURCES "${SERVER_PATH}/include/api/KinematicsServer.i"
 )
@@ -124,8 +124,11 @@ add_dependencies(UnityServerAPI server)
 swig_link_libraries(UnityServerAPI server ${LIBS} ${SYS_LIBS})
 
 add_custom_target(build_server_dll ALL
-    COMMAND cp -f "${CMAKE_BINARY_DIR}/UnityServerAPI.so" "${BUILD_UNITY_API_DIR}/UnityServerAPI.so"
-    COMMAND mcs -out:${BUILD_UNITY_API_DIR}/api.dll -pkg:dotnet -target:library ${BUILD_UNITY_API_DIR}/src/*.cs
+    COMMAND mcs -out:${CMAKE_BINARY_DIR}/_csbuild/api.dll -pkg:dotnet -target:library ${CMAKE_BINARY_DIR}/_csbuild/*.cs
+    COMMAND mkdir -p ${BUILD_UNITY_ASSETS_DIR}
+    COMMAND cp -rf ${SRC_PATH}/unity/* ${BUILD_UNITY_ASSETS_DIR}
+    COMMAND mkdir -p ${BUILD_UNITY_ASSETS_DIR}/Scripts/API
+    COMMAND cp -f ${CMAKE_BINARY_DIR}/UnityServerAPI.so ${CMAKE_BINARY_DIR}/_csbuild/api.dll ${BUILD_UNITY_ASSETS_DIR}/Scripts/API/
 )
 
 add_dependencies(build_server_dll UnityServerAPI)
