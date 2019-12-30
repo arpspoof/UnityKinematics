@@ -84,7 +84,7 @@ createLibrary(client ${CLIENT_PATH} ${LIBS} ${SYS_LIBS})
 createLibrary(server ${SERVER_PATH} ${LIBS} ${SYS_LIBS})
 
 set_target_properties(client PROPERTIES PUBLIC_HEADER 
-    "src/common/include/DataFormat.hpp;src/common/include/ActorBuffer.hpp;src/common/include/Command.hpp;src/client/include/api/KinematicsClient.hpp;src/client/include/RPCClient.hpp;src/client/include/AbstractDataProvider.hpp"
+    "src/common/include/DataFormat.hpp;src/common/include/ActorBuffer.hpp;src/common/include/Command.hpp;src/client/include/api/KinematicsClient.hpp;src/client/include/RenderController.hpp;src/client/include/AbstractCommandHandler.hpp;src/client/include/AbstractDataProvider.hpp"
 )
 set_target_properties(server PROPERTIES PUBLIC_HEADER 
     "src/common/include/DataFormat.hpp;src/common/include/ActorBuffer.hpp;src/common/include/Command.hpp;src/server/include/api/KinematicsServer.hpp"
@@ -134,7 +134,7 @@ endif()
 
 
 
-set(BUILD_TEST_CODE ON CACHE BOOL "Choose whether to build test code")
+set(BUILD_TEST_CODE OFF CACHE BOOL "Choose whether to build test code")
 if (${BUILD_TEST_CODE})
 
 set(TEST_PATH "${SRC_PATH}/test")

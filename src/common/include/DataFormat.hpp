@@ -18,12 +18,18 @@ struct ObjectState
     MSGPACK_DEFINE_ARRAY(objectName, x, y, z, qw, qx, qy, qz)
 };
 
+struct GroupState
+{
+    std::string groupName;
+    std::vector<ObjectState> objectStates;
+    GroupState() {}
+    GroupState(std::string groupName) :groupName(groupName) {}
+    GroupState(std::string groupName, int nObj) :groupName(groupName), objectStates(nObj) {}
+    MSGPACK_DEFINE_ARRAY(groupName, objectStates)
+};
+
 struct FrameState
 {
-    std::string sessionName;
-    std::vector<ObjectState> objectStates;
-    FrameState() {}
-    FrameState(std::string sessionName) :sessionName(sessionName) {}
-    FrameState(std::string sessionName, int nObj) :sessionName(sessionName), objectStates(nObj) {}
-    MSGPACK_DEFINE_ARRAY(sessionName, objectStates)
+    std::vector<GroupState> groups;
+    MSGPACK_DEFINE_ARRAY(groups)
 };

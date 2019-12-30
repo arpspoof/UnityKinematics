@@ -41,7 +41,7 @@ int CreateFrame(FrameState frame)
     return rpc_client->call("createFrame", frame).as<int>();
 }
 
-int SendCommand(Command cmd)
+int SendCommand(const Command& cmd)
 {
     return rpc_client->call("command", cmd).as<int>();
 }

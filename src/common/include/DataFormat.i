@@ -19,11 +19,20 @@ namespace std {
    %template(vectorstate) vector<ObjectState>;
 };
 
+struct GroupState
+{
+    std::string groupName;
+    std::vector<ObjectState> objectStates;
+    GroupState() {}
+    GroupState(std::string groupName) :groupName(groupName) {}
+    GroupState(std::string groupName, int nObj) :groupName(groupName), objectStates(nObj) {}
+};
+
+namespace std {
+   %template(vectorgroupstate) vector<GroupState>;
+};
+
 struct FrameState
 {
-    std::string sessionName;
-    std::vector<ObjectState> objectStates;
-    FrameState();
-    FrameState(std::string sessionName);
-    FrameState(std::string sessionName, int nObj);
+    std::vector<GroupState> groups;
 };

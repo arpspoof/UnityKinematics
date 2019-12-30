@@ -5,12 +5,14 @@
 #include "Command.hpp"
 #include "ActorBuffer.hpp"
 
+#include <vector>
+
 void RPCStartClient(const std::string& serverAddr, unsigned short serverPort,
     const std::string& localAddr, unsigned short commandHandlingPort);
 void RPCStopClient();
 
 int CreateFrame(FrameState frame);
-int SendCommand(Command cmd);
+int SendCommand(const Command& cmd);
 
 // non-API
 ActorBuffer<Command>* RPCGetCommandBuffer();
