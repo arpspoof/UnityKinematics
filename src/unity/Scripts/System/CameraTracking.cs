@@ -5,14 +5,14 @@ namespace UnityKinematics
     public class CameraTracking : MonoBehaviour
     {
         public string TrackingName = "root";
-        public float SphereCenterY = 3.5f;
+        public Vector3 SphereCenterOffset = new Vector3(0, 2, 0);
         public float SphereRadius = 7.7f;
         public float Longitude = 0;
         public float Latitude = 0;
         public float LongitudeAdjustmentStep = 0.02f;
         public float LatitudeAdjustmentStep = 0.02f;
         public float RadiusAdjustmentStep = 0.1f;
-        public float CenterYAdjustmentStep = 0.1f;
+        public float OffsetAdjustmentStep = 0.1f;
 
         void Update()
         {
@@ -25,7 +25,8 @@ namespace UnityKinematics
                     Mathf.Cos(Latitude) * Mathf.Cos(Longitude), 
                     Mathf.Sin(Latitude),
                     Mathf.Cos(Latitude) * Mathf.Sin(Longitude));
-                Vector3 sphereCenter = new Vector3(obj.transform.position.x, SphereCenterY, obj.transform.position.z);
+                Vector3 sphereCenter = obj.transform.position + SphereCenterOffset;
+                sphereCenter.y = SphereCenterOffset.y;
                 transform.position = trackingOffsetPos + sphereCenter;
                 transform.LookAt(sphereCenter, Vector3.up);
             }
@@ -63,11 +64,27 @@ namespace UnityKinematics
             }
             if (Input.GetKey(KeyCode.LeftControl)) 
             {
-                SphereCenterY -= CenterYAdjustmentStep;
+                SphereCenterOffset.y -= OffsetAdjustmentStep;
             }
             if (Input.GetKey(KeyCode.LeftAlt)) 
             {
-                SphereCenterY += CenterYAdjustmentStep;
+                SphereCenterOffset.y += OffsetAdjustmentStep;
+            }
+            if (Input.GetKey(KeyCode.I)) 
+            {
+                SphereCenterOffset += new Vector3(transform.forward.x, 0, transform.forward.z).normalized * OffsetAdjustmentStep;
+            }
+            if (Input.GetKey(KeyCode.K)) 
+            {
+                SphereCenterOffset -= new Vector3(transform.forward.x, 0, transform.forward.z).normalized * OffsetAdjustmentStep;
+            }
+            if (Input.GetKey(KeyCode.J)) 
+            {
+                SphereCenterOffset -= new Vector3(transform.right.x, 0, transform.right.z).normalized * OffsetAdjustmentStep;
+            }
+            if (Input.GetKey(KeyCode.L)) 
+            {
+                SphereCenterOffset += new Vector3(transform.right.x, 0, transform.right.z).normalized * OffsetAdjustmentStep;
             }
         }
     }

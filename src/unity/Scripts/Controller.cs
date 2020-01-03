@@ -14,6 +14,7 @@ namespace UnityKinematics
     public class Controller : MonoBehaviour
     {
         public ushort ServerPort = 8080;
+        public string CameraTrackingObjectName = "root";
         public RegisteredMaterials[] registeredMaterials;
 
         public static int SkipRate = 1;
@@ -27,6 +28,9 @@ namespace UnityKinematics
         void Start()
         {
             StaticObjects.Init();
+
+            var cameraTracking = GameObject.Find("Main Camera")?.GetComponent<CameraTracking>();
+            if (cameraTracking) cameraTracking.TrackingName = CameraTrackingObjectName;
 
             commandHandler = new CommandHandler();
             commandHandler.Init();

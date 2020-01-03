@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace UnityKinematics
 {
-    public static class StaticObjects
+    public static partial class StaticObjects
     {
         private static Texture2D texturePlane;
         public static bool ShowUI { get; set; }
@@ -15,6 +15,7 @@ namespace UnityKinematics
             InitPlane();
             InitLights();
             UI.InitUI();
+            CustomizeStartUp();
         }
 
         public static void InitCamera()
