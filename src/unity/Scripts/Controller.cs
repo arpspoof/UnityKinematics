@@ -99,7 +99,7 @@ namespace UnityKinematics
 
         void Update()
         {
-            CommandBuffer cmdBuffer = UnityServerAPI.RPCGetCommandBuffer();
+            RPCCommandBuffer cmdBuffer = UnityServerAPI.RPCGetCommandBuffer();
             int nCmd = cmdBuffer.GetNumOfAvailableElements();
             for (int i = 0; i < nCmd; i++)
             {
@@ -116,7 +116,7 @@ namespace UnityKinematics
                 return;
             }
 
-            FrameBuffer frameBuffer = UnityServerAPI.RPCGetFrameBuffer();
+            RPCFrameBuffer frameBuffer = UnityServerAPI.RPCGetFrameBuffer();
             int n = frameBuffer.GetNumOfAvailableElements();
             if (n > 0)
             {

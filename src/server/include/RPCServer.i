@@ -5,8 +5,8 @@
 void RPCStartServer(unsigned short port);
 void RPCStopServer();
 
-%template(FrameBuffer) ActorBuffer<FrameState>;
-%template(CommandBuffer) ActorBuffer<Command>;
+%template(RPCFrameBuffer) ActorBuffer<FrameState>;
+%template(RPCCommandBuffer) ActorBuffer<Command>;
 
 ActorBuffer<FrameState>* RPCGetFrameBuffer();
 ActorBuffer<Command>* RPCGetCommandBuffer();
