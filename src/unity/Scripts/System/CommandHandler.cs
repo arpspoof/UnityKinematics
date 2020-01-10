@@ -44,10 +44,11 @@ namespace UnityKinematics
             groupObj.transform.position = Vector3.zero;
             groupObj.transform.rotation = Quaternion.identity;
 
-            if (groupObj.transform.Find(givenName))
+            Transform objectTransform = groupObj.transform.Find(givenName);
+            if (objectTransform)
             {
-                Debug.Log($"Object with name '{givenName}' already exists in stream '{groupName}', skip.");
-                return;
+                Debug.Log($"Object with name '{givenName}' already exists in stream '{groupName}', recreate.");
+                GameObject.Destroy(objectTransform.gameObject);
             }
 
             PrimitiveObject obj = null;
