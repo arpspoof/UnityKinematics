@@ -9,11 +9,11 @@ namespace UnityKinematics
         private static Texture2D texturePlane;
         public static bool ShowUI { get; set; }
 
-        public static void Init()
+        public static void Init(Controller controller)
         {
             InitCamera();
             InitPlane();
-            InitLights();
+            if (controller.UseDefaultLightSettings) InitLights();
             UI.InitUI();
             CustomizeStartUp();
         }

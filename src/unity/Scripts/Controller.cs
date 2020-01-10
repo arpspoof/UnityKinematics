@@ -1,33 +1,22 @@
 ﻿using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 namespace UnityKinematics
 {
-    [Serializable]
-    public struct RegisteredMaterials 
+    public partial class Controller : MonoBehaviour
     {
-        public string name;
-        public Material material;
-    }
-
-    public class Controller : MonoBehaviour
-    {
-        public ushort ServerPort = 8080;
-        public string CameraTrackingObjectName = "root";
-        public RegisteredMaterials[] registeredMaterials;
-
         public static int SkipRate = 1;
         public static Dictionary<string, Material> RegisteredMaterialsMap = new Dictionary<string, Material>();
         public static HashSet<string> groupNames = new HashSet<string>();
 
         private int frameCount = -1;
         private CommandHandler commandHandler;
-        private List<KeyCode> monitoredKeys = new List<KeyCode> { KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.Space };
+        private List<string> monitoredKeys = new List<string> { "Physical FPS -", "Physical FPS +", "Pause" };
 
         void Start()
         {
-            StaticObjects.Init();
+            StaticObjects.Init(this);
+            InputController.InitKeyMapping(this);
 
             var cameraTracking = GameObject.Find("Main Camera")?.GetComponent<CameraTracking>();
             if (cameraTracking) cameraTracking.TrackingName = CameraTrackingObjectName;
@@ -59,28 +48,28 @@ namespace UnityKinematics
 
         private void CheckKeyboard()
         {
-            foreach (KeyCode code in monitoredKeys)
+            foreach (string code in monitoredKeys)
             {
-                if (Input.GetKeyDown(code))
+                if (InputController.GetKeyDown(code))
                 {
                     Command cmd = new Command("_sys_key");
-                    cmd.ps.Add(code.ToString("g"));
-                    if (Input.GetKey(KeyCode.RightControl)) cmd.pi.Add(10);
+                    cmd.ps.Add(code);
+                    if (InputController.GetKey("FPS Adjustment Acceleration")) cmd.pi.Add(10);
                     else cmd.pi.Add(1);
                     CommandSender.Send(cmd);
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (InputController.GetKeyDown("Render FPS -"))
             {
                 SkipRate++;
             }
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (InputController.GetKeyDown("Render FPS +"))
             {
                 if (SkipRate > 1) SkipRate--;
             }
 
-            if (Input.GetKeyDown(KeyCode.R))
+            if (InputController.GetKeyDown("Reset Scene"))
             {
                 UI.PhysicalPaused = UI.MaxPhysicalFPS = UI.PhysicalFPS = 0;
                 foreach (string name in groupNames)
@@ -91,7 +80,7 @@ namespace UnityKinematics
                 groupNames.Clear();
             }
 
-            if (Input.GetKeyDown(KeyCode.U))
+            if (InputController.GetKeyDown("Show / Hide UI"))
             {
                 UI.ShowUI = !UI.ShowUI;
             }

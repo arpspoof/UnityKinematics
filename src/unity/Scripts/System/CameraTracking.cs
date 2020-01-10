@@ -34,55 +34,55 @@ namespace UnityKinematics
 
         private void HandleKeyPress()
         {
-            if (Input.GetKey(KeyCode.W)) 
+            if (InputController.GetKey("Camera Latitude +")) 
             {
                 Latitude = Mathf.Clamp(Latitude + LatitudeAdjustmentStep, -Mathf.PI / 2, Mathf.PI / 2);
             }
-            if (Input.GetKey(KeyCode.S)) 
+            if (InputController.GetKey("Camera Latitude -")) 
             {
                 Latitude = Mathf.Clamp(Latitude - LatitudeAdjustmentStep, -Mathf.PI / 2, Mathf.PI / 2);
             }
-            if (Input.GetKey(KeyCode.A)) 
+            if (InputController.GetKey("Camera Longitude -")) 
             {
                 Longitude -= LongitudeAdjustmentStep;
                 if (Longitude < 0) Longitude += Mathf.PI * 2;
                 if (Longitude > Mathf.PI * 2) Longitude -= Mathf.PI * 2;
             }
-            if (Input.GetKey(KeyCode.D)) 
+            if (InputController.GetKey("Camera Longitude +")) 
             {
                 Longitude += LongitudeAdjustmentStep;
                 if (Longitude < 0) Longitude += Mathf.PI * 2;
                 if (Longitude > Mathf.PI * 2) Longitude -= Mathf.PI * 2;
             }
-            if (Input.GetKey(KeyCode.LeftShift)) 
+            if (InputController.GetKey("Camera Radius +")) 
             {
                 SphereRadius += RadiusAdjustmentStep;
             }
-            if (Input.GetKey(KeyCode.F)) 
+            if (InputController.GetKey("Camera Radius -")) 
             {
                 SphereRadius -= RadiusAdjustmentStep;
             }
-            if (Input.GetKey(KeyCode.LeftControl)) 
+            if (InputController.GetKey("Camera Center Downward")) 
             {
                 SphereCenterOffset.y -= OffsetAdjustmentStep;
             }
-            if (Input.GetKey(KeyCode.LeftAlt)) 
+            if (InputController.GetKey("Camera Center Upward")) 
             {
                 SphereCenterOffset.y += OffsetAdjustmentStep;
             }
-            if (Input.GetKey(KeyCode.I)) 
+            if (InputController.GetKey("Camera Center Forward")) 
             {
                 SphereCenterOffset += new Vector3(transform.forward.x, 0, transform.forward.z).normalized * OffsetAdjustmentStep;
             }
-            if (Input.GetKey(KeyCode.K)) 
+            if (InputController.GetKey("Camera Center Backward")) 
             {
                 SphereCenterOffset -= new Vector3(transform.forward.x, 0, transform.forward.z).normalized * OffsetAdjustmentStep;
             }
-            if (Input.GetKey(KeyCode.J)) 
+            if (InputController.GetKey("Camera Center Leftward")) 
             {
                 SphereCenterOffset -= new Vector3(transform.right.x, 0, transform.right.z).normalized * OffsetAdjustmentStep;
             }
-            if (Input.GetKey(KeyCode.L)) 
+            if (InputController.GetKey("Camera Center Rightward")) 
             {
                 SphereCenterOffset += new Vector3(transform.right.x, 0, transform.right.z).normalized * OffsetAdjustmentStep;
             }
