@@ -67,14 +67,18 @@ static void HandleSystemCommand(const Command& cmd)
     const string& name = cmd.name;
     if (name == "_sys_key") {
         const string& key = cmd.ps[0];
-        if (key == "Space") {
+        if (key == "Pause") {
             Pause(!paused);
         }
-        else if (key == "LeftArrow") {
-            SetPhysicalFPS(max(physicalFPS - cmd.pi[0], 1));
+        else if (key == "Physical FPS -") {
+            int delta = cmd.pi[0];
+            if (delta > 1 && physicalFPS >= 120) delta = 60;
+            SetPhysicalFPS(max(physicalFPS - delta, 1));
         }
-        else if (key == "RightArrow") {
-            SetPhysicalFPS(min(physicalFPS + cmd.pi[0], maxPhysicalFPS));
+        else if (key == "Physical FPS +") {
+            int delta = cmd.pi[0];
+            if (delta > 1 && physicalFPS >= 60) delta = 60;
+            SetPhysicalFPS(min(physicalFPS + delta, maxPhysicalFPS));
         }
     }
 }
