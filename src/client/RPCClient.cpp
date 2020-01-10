@@ -38,12 +38,32 @@ static void RPCStopCommandListening()
 
 int CreateFrame(FrameState frame)
 {
-    return rpc_client->call("createFrame", frame).as<int>();
+    if (!rpc_client) {
+        printf("error! Please start rpc before calling functions!\n");
+        return -2;
+    }
+    try {
+        return rpc_client->call("createFrame", frame).as<int>();
+    }
+    catch (...) {
+        printf("warning: rpc call failed after timeout (CreateFrame)\n");
+        return -1;
+    }
 }
 
 int SendCommand(const Command& cmd)
 {
-    return rpc_client->call("command", cmd).as<int>();
+    if (!rpc_client) {
+        printf("error! Please start rpc before calling functions!\n");
+        return -2;
+    }
+    try {
+        return rpc_client->call("command", cmd).as<int>();
+    }
+    catch (...) {
+        printf("warning: rpc call failed after timeout (SendCommand)\n");
+        return -1;
+    }
 }
 
 void RPCStartClient(const std::string& serverAddr, unsigned short serverPort,
@@ -53,6 +73,7 @@ void RPCStartClient(const std::string& serverAddr, unsigned short serverPort,
 
     printf("starting rpc client ...\n");
     rpc_client = new rpc::client(serverAddr, serverPort);
+    rpc_client->set_timeout(500);
 
     Command cmd("_sys_connect");
     cmd.ps.push_back(localAddr);
