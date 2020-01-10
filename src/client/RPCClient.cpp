@@ -67,13 +67,13 @@ int SendCommand(const Command& cmd)
 }
 
 void RPCStartClient(const std::string& serverAddr, unsigned short serverPort,
-    const std::string& localAddr, unsigned short commandHandlingPort)
+    const std::string& localAddr, unsigned short commandHandlingPort, int rpcTimeout)
 {
     RPCStartCommandListening(commandHandlingPort);
 
     printf("starting rpc client ...\n");
     rpc_client = new rpc::client(serverAddr, serverPort);
-    rpc_client->set_timeout(500);
+    rpc_client->set_timeout(rpcTimeout);
 
     Command cmd("_sys_connect");
     cmd.ps.push_back(localAddr);

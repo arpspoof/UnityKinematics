@@ -8,7 +8,7 @@
 #include <vector>
 
 void RPCStartClient(const std::string& serverAddr, unsigned short serverPort,
-    const std::string& localAddr, unsigned short commandHandlingPort);
+    const std::string& localAddr, unsigned short commandHandlingPort, int rpcTimeout);
 void RPCStopClient();
 
 int CreateFrame(FrameState frame);

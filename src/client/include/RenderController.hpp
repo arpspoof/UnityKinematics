@@ -11,7 +11,8 @@ void InitRenderController(
     unsigned short commandHandlingPort, 
     int maxPhysicalFPS, 
     AbstractDataProvider* dataProvider, 
-    AbstractCommandHandler* commandHandler
+    AbstractCommandHandler* commandHandler, 
+    int rpcTimeout = 2000
 );
 
 void DisposeRenderController();
@@ -26,7 +27,7 @@ void CreatePrimitive(
     const std::string& type, 
     const std::string& groupName,
     const std::string& objectName,
-    float param0,
-    float param1,
-    float param2
+    float param0 = 0,
+    float param1 = 0,
+    float param2 = 0
 );

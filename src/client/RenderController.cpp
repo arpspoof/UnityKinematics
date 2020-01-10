@@ -32,7 +32,8 @@ void InitRenderController(
     unsigned short commandHandlingPort, 
     int maxPhysicalFPS, 
     AbstractDataProvider* dataProvider, 
-    AbstractCommandHandler* commandHandler
+    AbstractCommandHandler* commandHandler, 
+    int rpcTimeout
 )
 {
     ::maxPhysicalFPS = maxPhysicalFPS;
@@ -41,7 +42,7 @@ void InitRenderController(
 
     physicalFPS = min(60, maxPhysicalFPS);
 
-    RPCStartClient(serverAddr, serverPort, localAddr, commandHandlingPort);
+    RPCStartClient(serverAddr, serverPort, localAddr, commandHandlingPort, rpcTimeout);
     SendFPSData();
 }
 
