@@ -17,13 +17,18 @@ namespace UnityKinematics
         public KeyCode key;
     }
 
+    public enum LightingSettings
+    {
+        Sunny, Dark, None
+    }
+
     public partial class Controller : MonoBehaviour
     {
         [Header("RPC")]
         public ushort ServerPort = 8080;
 
         [Header("Lighting")]
-        public bool UseDefaultLightSettings = true;
+        public LightingSettings lightingSettings = LightingSettings.Sunny;
 
         [Header("Camera")]
         public string CameraTrackingObjectName = "root";

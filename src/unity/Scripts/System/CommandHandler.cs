@@ -74,6 +74,7 @@ namespace UnityKinematics
             foreach (GameObject renderableObj in obj.GetRenderableObjects())
             {
                 renderableObj.GetComponent<Renderer>().material = material;
+                renderableObj.GetComponent<Renderer>().receiveShadows = false;
             }
         }
 
