@@ -19,7 +19,7 @@ namespace UnityKinematics
 
     public enum LightingSettings
     {
-        Sunny, Dark, None
+        Sunny, Dark, Foggy, None
     }
 
     public partial class Controller : MonoBehaviour

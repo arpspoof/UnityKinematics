@@ -14,11 +14,18 @@ namespace UnityKinematics
             {
                 case LightingSettings.Sunny: 
                     InitPlane();
-                    LightingInitializer.InitSunny(); 
+                    LightingInitializer.InitSunny(controller); 
                     break;
                 case LightingSettings.Dark: 
                     InitPlane("floor-dark");
                     LightingInitializer.InitDark(controller); 
+                    break;
+                case LightingSettings.Foggy: 
+                    InitPlane("floor-single");
+                    LightingInitializer.InitFoggy(controller); 
+                    break;
+                default:
+                    InitPlane();
                     break;
             }
             UI.InitUI();
@@ -46,7 +53,7 @@ namespace UnityKinematics
             plane.GetComponent<Renderer>().material.mainTexture = texturePlane;
             plane.GetComponent<Renderer>().material.mainTextureScale = new Vector2(100, 100);
             plane.GetComponent<Renderer>().material.SetFloat("_Metallic", 0.252f);
-            plane.GetComponent<Renderer>().material.SetFloat("_Glossiness", 0.458f);
+            plane.GetComponent<Renderer>().material.SetFloat("_Glossiness", 0.1f);
         }
     }
 }
