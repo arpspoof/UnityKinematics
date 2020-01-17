@@ -4,29 +4,29 @@ namespace UnityKinematics
 {
     public class CameraTracking : MonoBehaviour
     {
-        public string TrackingName = "root";
-        public Vector3 SphereCenterOffset = new Vector3(0, 2, 0);
-        public float SphereRadius = 7.7f;
-        public float Longitude = 0;
-        public float Latitude = 0;
-        public float LongitudeAdjustmentStep = 0.02f;
-        public float LatitudeAdjustmentStep = 0.02f;
-        public float RadiusAdjustmentStep = 0.1f;
-        public float OffsetAdjustmentStep = 0.1f;
+        private CameraSettings settings = new CameraSettings();
+
+        internal void InitSettings(CameraSettings settings)
+        {
+            this.settings = settings;
+            var camera = gameObject.GetComponent<Camera>();
+            camera.nearClipPlane = 0.01f;
+            camera.fieldOfView = settings.fieldOfView;
+        }
 
         void Update()
         {
             HandleKeyPress();
 
-            GameObject obj = GameObject.Find(TrackingName);
+            GameObject obj = GameObject.Find(settings.TrackingName);
             if (obj)
             {
-                Vector3 trackingOffsetPos = SphereRadius * new Vector3(
-                    Mathf.Cos(Latitude) * Mathf.Cos(Longitude), 
-                    Mathf.Sin(Latitude),
-                    Mathf.Cos(Latitude) * Mathf.Sin(Longitude));
-                Vector3 sphereCenter = obj.transform.position + SphereCenterOffset;
-                sphereCenter.y = SphereCenterOffset.y;
+                Vector3 trackingOffsetPos = settings.SphereRadius * new Vector3(
+                    Mathf.Cos(settings.Latitude) * Mathf.Cos(settings.Longitude), 
+                    Mathf.Sin(settings.Latitude),
+                    Mathf.Cos(settings.Latitude) * Mathf.Sin(settings.Longitude));
+                Vector3 sphereCenter = obj.transform.position + settings.SphereCenterOffset;
+                sphereCenter.y = settings.SphereCenterOffset.y;
                 transform.position = trackingOffsetPos + sphereCenter;
                 transform.LookAt(sphereCenter, Vector3.up);
             }
@@ -36,55 +36,55 @@ namespace UnityKinematics
         {
             if (InputController.GetKey("Camera Latitude +")) 
             {
-                Latitude = Mathf.Clamp(Latitude + LatitudeAdjustmentStep, -Mathf.PI / 2, Mathf.PI / 2);
+                settings.Latitude = Mathf.Clamp(settings.Latitude + settings.LatitudeAdjustmentStep, -Mathf.PI / 2, Mathf.PI / 2);
             }
             if (InputController.GetKey("Camera Latitude -")) 
             {
-                Latitude = Mathf.Clamp(Latitude - LatitudeAdjustmentStep, -Mathf.PI / 2, Mathf.PI / 2);
+                settings.Latitude = Mathf.Clamp(settings.Latitude - settings.LatitudeAdjustmentStep, -Mathf.PI / 2, Mathf.PI / 2);
             }
             if (InputController.GetKey("Camera Longitude -")) 
             {
-                Longitude -= LongitudeAdjustmentStep;
-                if (Longitude < 0) Longitude += Mathf.PI * 2;
-                if (Longitude > Mathf.PI * 2) Longitude -= Mathf.PI * 2;
+                settings.Longitude -= settings.LongitudeAdjustmentStep;
+                if (settings.Longitude < 0) settings.Longitude += Mathf.PI * 2;
+                if (settings.Longitude > Mathf.PI * 2) settings.Longitude -= Mathf.PI * 2;
             }
             if (InputController.GetKey("Camera Longitude +")) 
             {
-                Longitude += LongitudeAdjustmentStep;
-                if (Longitude < 0) Longitude += Mathf.PI * 2;
-                if (Longitude > Mathf.PI * 2) Longitude -= Mathf.PI * 2;
+                settings.Longitude += settings.LongitudeAdjustmentStep;
+                if (settings.Longitude < 0) settings.Longitude += Mathf.PI * 2;
+                if (settings.Longitude > Mathf.PI * 2) settings.Longitude -= Mathf.PI * 2;
             }
             if (InputController.GetKey("Camera Radius +")) 
             {
-                SphereRadius += RadiusAdjustmentStep;
+                settings.SphereRadius += settings.RadiusAdjustmentStep;
             }
             if (InputController.GetKey("Camera Radius -")) 
             {
-                SphereRadius -= RadiusAdjustmentStep;
+                settings.SphereRadius -= settings.RadiusAdjustmentStep;
             }
             if (InputController.GetKey("Camera Center Downward")) 
             {
-                SphereCenterOffset.y -= OffsetAdjustmentStep;
+                settings.SphereCenterOffset.y -= settings.OffsetAdjustmentStep;
             }
             if (InputController.GetKey("Camera Center Upward")) 
             {
-                SphereCenterOffset.y += OffsetAdjustmentStep;
+                settings.SphereCenterOffset.y += settings.OffsetAdjustmentStep;
             }
             if (InputController.GetKey("Camera Center Forward")) 
             {
-                SphereCenterOffset += new Vector3(transform.forward.x, 0, transform.forward.z).normalized * OffsetAdjustmentStep;
+                settings.SphereCenterOffset += new Vector3(transform.forward.x, 0, transform.forward.z).normalized * settings.OffsetAdjustmentStep;
             }
             if (InputController.GetKey("Camera Center Backward")) 
             {
-                SphereCenterOffset -= new Vector3(transform.forward.x, 0, transform.forward.z).normalized * OffsetAdjustmentStep;
+                settings.SphereCenterOffset -= new Vector3(transform.forward.x, 0, transform.forward.z).normalized * settings.OffsetAdjustmentStep;
             }
             if (InputController.GetKey("Camera Center Leftward")) 
             {
-                SphereCenterOffset -= new Vector3(transform.right.x, 0, transform.right.z).normalized * OffsetAdjustmentStep;
+                settings.SphereCenterOffset -= new Vector3(transform.right.x, 0, transform.right.z).normalized * settings.OffsetAdjustmentStep;
             }
             if (InputController.GetKey("Camera Center Rightward")) 
             {
-                SphereCenterOffset += new Vector3(transform.right.x, 0, transform.right.z).normalized * OffsetAdjustmentStep;
+                settings.SphereCenterOffset += new Vector3(transform.right.x, 0, transform.right.z).normalized * settings.OffsetAdjustmentStep;
             }
         }
     }

@@ -9,10 +9,10 @@ namespace UnityKinematics
 
         public static void InitKeyMapping(Controller controller)
         {
-            foreach (var map in controller.CameraControl) keys.Add(map.name, map.key);
-            foreach (var map in controller.FPSControl) keys.Add(map.name, map.key);
-            foreach (var map in controller.UIControl) keys.Add(map.name, map.key);
-            foreach (var map in controller.SceneControl) keys.Add(map.name, map.key);
+            foreach (var map in controller.shortcutSettings.CameraControl) keys.Add(map.name, map.key);
+            foreach (var map in controller.shortcutSettings.FPSControl) keys.Add(map.name, map.key);
+            foreach (var map in controller.shortcutSettings.UIControl) keys.Add(map.name, map.key);
+            foreach (var map in controller.shortcutSettings.SceneControl) keys.Add(map.name, map.key);
         }
 
         public static bool GetKey(string keyName) => Input.GetKey(keys[keyName]);

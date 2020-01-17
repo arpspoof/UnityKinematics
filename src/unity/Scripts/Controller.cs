@@ -5,6 +5,17 @@ namespace UnityKinematics
 {
     public partial class Controller : MonoBehaviour
     {
+        public GeneralSettings generalSettings = new GeneralSettings();
+        public CameraSettings cameraSettings = new CameraSettings();
+        public PlaneSettings planeSettings = new PlaneSettings();
+        public LightSettingsForPreset[] lightSettingsForPresets = new LightSettingsForPreset[]
+        {
+            new LightSettingsForPreset(LightingPreset.Sunny),
+            new LightSettingsForPreset(LightingPreset.Dark),
+            new LightSettingsForPreset(LightingPreset.Foggy),
+        };
+        public ShortcutSettings shortcutSettings = new ShortcutSettings();
+
         public static int SkipRate = 1;
         public static Dictionary<string, Material> RegisteredMaterialsMap = new Dictionary<string, Material>();
         public static HashSet<string> groupNames = new HashSet<string>();
@@ -13,18 +24,27 @@ namespace UnityKinematics
         private CommandHandler commandHandler;
         private List<string> monitoredKeys = new List<string> { "Physical FPS -", "Physical FPS +", "Pause" };
 
+        internal LightSettingsForPreset GetLightSettings()
+        {
+            LightingPreset preset = generalSettings.lightingPreset;
+            foreach (var x in lightSettingsForPresets)
+            {
+                if (x.preset == preset) return x;
+            }
+
+            Debug.LogError($"No settings for preset {preset.ToString("g")}");
+            return null;
+        }
+
         void Start()
         {
             StaticObjects.Init(this);
             InputController.InitKeyMapping(this);
 
-            var cameraTracking = GameObject.Find("Main Camera")?.GetComponent<CameraTracking>();
-            if (cameraTracking) cameraTracking.TrackingName = CameraTrackingObjectName;
-
             commandHandler = new CommandHandler();
             commandHandler.Init();
 
-            foreach (var kvp in registeredMaterials)
+            foreach (var kvp in generalSettings.registeredMaterials)
             {
                 RegisteredMaterialsMap.Add(kvp.name, kvp.material);
             }
@@ -36,7 +56,7 @@ namespace UnityKinematics
 
             RegisteredMaterialsMap.Add("_sys_default", renderer.material);
 
-            UnityServerAPI.RPCStartServer(ServerPort);
+            UnityServerAPI.RPCStartServer(generalSettings.ServerPort);
             Debug.Log("Waiting for data");
         }
 
