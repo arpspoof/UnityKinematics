@@ -55,7 +55,8 @@ namespace UnityKinematics
 
             var sunLight = sunLightObj.GetComponent<Light>();
             sunLight.type = LightType.Directional;
-            sunLight.shadows = LightShadows.Soft;
+            if (settings.enableSunlightShadow) sunLight.shadows = LightShadows.Soft;
+            else sunLight.shadows = LightShadows.None;
             sunLight.intensity = settings.sunLightIntensity;
 
             for (int i = 0; i < settings.nDirectionalLights; i++)
