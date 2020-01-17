@@ -4,7 +4,7 @@ namespace UnityKinematics
 {
     public class CameraTracking : MonoBehaviour
     {
-        private CameraSettings settings = new CameraSettings();
+        public CameraSettings settings = new CameraSettings();
 
         internal void InitSettings(CameraSettings settings)
         {

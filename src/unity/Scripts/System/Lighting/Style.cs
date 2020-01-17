@@ -4,7 +4,7 @@ namespace UnityKinematics
 {
     public class Style : MonoBehaviour
     {
-        public StyleSettings settings;
+        private StyleSettings settings;
 
         internal void InitSettings(StyleSettings settings)
         {
