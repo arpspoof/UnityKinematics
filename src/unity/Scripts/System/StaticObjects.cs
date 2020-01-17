@@ -13,6 +13,8 @@ namespace UnityKinematics
             InitLightings(controller);
             
             UI.InitUI();
+            UI.ShowUI = controller.generalSettings.showUI;
+            
             CustomizeStartUp();
         }
 
