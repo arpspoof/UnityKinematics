@@ -2,7 +2,7 @@
     #include "RPCServer.hpp"
 %}
 
-void RPCStartServer(unsigned short port);
+void RPCStartServer(unsigned short port, int commandTimeout = 500);
 void RPCStopServer();
 
 %template(RPCFrameBuffer) ActorBuffer<FrameState>;

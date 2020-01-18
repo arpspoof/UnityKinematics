@@ -12,11 +12,13 @@ static rpc::client* rpc_client = nullptr;
 static ActorBuffer<FrameState>* frame_buffer = nullptr;
 static ActorBuffer<Command>* cmd_buffer = nullptr;
 
+static int timeout = 500;
+
 static void RPCStartCommandSender(const std::string& addr, unsigned short port)
 {
     printf("starting command sender ...\n");
     rpc_client = new rpc::client(addr, port);
-    rpc_client->set_timeout(500);
+    rpc_client->set_timeout(timeout);
 }
 
 static void RPCStopCommandSender()
@@ -46,9 +48,10 @@ static int command(Command cmd)
     return cmd_buffer->GetNumOfAvailableElements();
 }
 
-void RPCStartServer(unsigned short port)
+void RPCStartServer(unsigned short port, int commandTimeout)
 {
     printf("starting rpc server ...\n");
+    timeout = commandTimeout;
     frame_buffer = new ActorBuffer<FrameState>();
     cmd_buffer = new ActorBuffer<Command>();
     rpc_server = new rpc::server(port);
@@ -83,6 +86,10 @@ ActorBuffer<Command>* RPCGetCommandBuffer()
 
 int SendCommand(Command cmd)
 {
+    if (!rpc_client) {
+        printf("no client connected. Command failed.\n");
+        return -2;
+    }
     try {
         return rpc_client->call("command", cmd).as<int>();
     }

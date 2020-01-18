@@ -11,6 +11,10 @@ namespace UnityKinematics
             {
                 Debug.LogWarning("Command failed, remote is not responding");
             }
+            if (code == -2)
+            {
+                Debug.LogWarning("Command failed, no remote connected");
+            }
         }
     }
 }

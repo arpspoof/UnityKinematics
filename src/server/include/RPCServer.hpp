@@ -4,7 +4,7 @@
 #include "DataFormat.hpp"
 #include "Command.hpp"
 
-void RPCStartServer(unsigned short port);
+void RPCStartServer(unsigned short port, int commandTimeout = 500);
 void RPCStopServer();
 
 ActorBuffer<FrameState>* RPCGetFrameBuffer();
