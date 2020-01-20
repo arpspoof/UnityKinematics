@@ -1,39 +1,23 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 namespace UnityKinematics
 {
-    public static class UI
+    [RequireComponent(typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster))]
+    public class FPSTextBox : MonoBehaviour
     {
-        public static bool ShowUI { get; set; }
+        public bool showUI = true;
+
         public static int PhysicalFPS { get; set; } = 0;
         public static int MaxPhysicalFPS { get; set; } = 0;
         public static int PhysicalPaused { get; set; } = 0;
 
-        private static GameObject canvasObj;
         private static GameObject physicalFPSTextObj;
         private static GameObject renderFPSTextObj;
         private static Font defaultFont;
 
-        public static void InitUI()
+        void Start()
         {
-            ShowUI = true;
-
-            canvasObj = new GameObject("Canvas");
-
-            Canvas canvas = canvasObj.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-
-            canvasObj.AddComponent<CanvasScaler>();
-            canvasObj.AddComponent<GraphicRaycaster>();
-
-            var eventSystemObj = new GameObject("EventSystem");
-            eventSystemObj.AddComponent<EventSystem>();
-            eventSystemObj.AddComponent<StandaloneInputModule>();
-            eventSystemObj.AddComponent<BaseInput>();
-
             defaultFont = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
 
             renderFPSTextObj = new GameObject("txt___render", typeof(RectTransform));
@@ -41,18 +25,45 @@ namespace UnityKinematics
 
             physicalFPSTextObj = new GameObject("txt___physical", typeof(RectTransform));
             InitTextbox(physicalFPSTextObj, new Color(1, 0.9f, 0.8f));
+
+            KinematicsServerEvents.OnCommand += OnCommand;
         }
 
-        public static void UpdateUI()
+        void OnCommand(Command cmd)
         {
-            if (!ShowUI)
+            switch (cmd.name)
             {
-                canvasObj.SetActive(false);
+                case "_sys_physical_fps":
+                    PhysicalFPS = cmd.pi[0];
+                    MaxPhysicalFPS = cmd.pi[1];
+                    PhysicalPaused = cmd.pi[2];
+                    break;
+            }
+        }
+
+        void Update()
+        {
+            if (InputController.GetKeyDown("Reset Scene"))
+            {
+                FPSTextBox.PhysicalPaused = 0;
+                FPSTextBox.MaxPhysicalFPS = 0;
+                FPSTextBox.PhysicalFPS = 0;
+            }
+            if (InputController.GetKeyDown("Show / Hide UI"))
+            {
+                showUI = !showUI;
+            }
+
+            if (!showUI)
+            {
+                if (physicalFPSTextObj) physicalFPSTextObj.SetActive(false);
+                if (renderFPSTextObj) renderFPSTextObj.SetActive(false);
                 return;
             }
-            else if (!canvasObj.activeSelf)
+            else 
             {
-                canvasObj.SetActive(true);
+                if (physicalFPSTextObj) physicalFPSTextObj.SetActive(true);
+                if (renderFPSTextObj) renderFPSTextObj.SetActive(true);
             }
 
             int posY = -20;
@@ -75,14 +86,14 @@ namespace UnityKinematics
             }
 
             int fps = Mathf.CeilToInt(1.0f / Time.deltaTime);
-            renderFPSTextObj.GetComponent<Text>().text = $"Render: {(fps + (fps & 1)) / Controller.SkipRate} RF/s";
+            renderFPSTextObj.GetComponent<Text>().text = $"Render: {(fps + (fps & 1)) / KinematicsServer.SkipRate} RF/s";
             renderFPSTextObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, posY);
         }
 
-        private static void InitTextbox(GameObject obj, Color color)
+        private void InitTextbox(GameObject obj, Color color)
         {
             Text txt = obj.AddComponent<Text>();
-            obj.transform.SetParent(canvasObj.transform);
+            obj.transform.SetParent(transform);
 
             txt.color = color;
             txt.font = defaultFont;

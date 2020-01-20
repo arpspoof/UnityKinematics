@@ -3,17 +3,28 @@ using System.Collections.Generic;
 
 namespace UnityKinematics
 {
-    public partial class Controller : MonoBehaviour
+    public static class KinematicsServerEvents
+    {
+        public delegate void CommandHandlerDelegate(Command cmd);
+        public delegate void NewFrameHandlerDelegate();
+
+        public static event CommandHandlerDelegate OnCommand;
+        public static event NewFrameHandlerDelegate OnNewFrame;
+
+        internal static void InvokeOnCommand(Command cmd)
+        {
+            OnCommand?.Invoke(cmd);
+        }
+
+        internal static void InvokeOnNewFrame()
+        {
+            OnNewFrame?.Invoke();
+        }
+    }
+
+    public partial class KinematicsServer : MonoBehaviour
     {
         public GeneralSettings generalSettings = new GeneralSettings();
-        public CameraSettings cameraSettings = new CameraSettings();
-        public PlaneSettings planeSettings = new PlaneSettings();
-        public LightSettingsForPreset[] lightSettingsForPresets = new LightSettingsForPreset[]
-        {
-            new LightSettingsForPreset(LightingPreset.Sunny),
-            new LightSettingsForPreset(LightingPreset.Dark),
-            new LightSettingsForPreset(LightingPreset.Foggy),
-        };
         public ShortcutSettings shortcutSettings = new ShortcutSettings();
 
         public static int SkipRate = 1;
@@ -24,21 +35,8 @@ namespace UnityKinematics
         private CommandHandler commandHandler;
         private List<string> monitoredKeys = new List<string> { "Physical FPS -", "Physical FPS +", "Pause" };
 
-        internal LightSettingsForPreset GetLightSettings()
-        {
-            LightingPreset preset = generalSettings.lightingPreset;
-            foreach (var x in lightSettingsForPresets)
-            {
-                if (x.preset == preset) return x;
-            }
-
-            Debug.LogError($"No settings for preset {preset.ToString("g")}");
-            return null;
-        }
-
         void Start()
         {
-            StaticObjects.Init(this);
             InputController.InitKeyMapping(this);
 
             commandHandler = new CommandHandler();
@@ -91,18 +89,12 @@ namespace UnityKinematics
 
             if (InputController.GetKeyDown("Reset Scene"))
             {
-                UI.PhysicalPaused = UI.MaxPhysicalFPS = UI.PhysicalFPS = 0;
                 foreach (string name in groupNames)
                 {
                     var group = GameObject.Find(name);
                     if (group) GameObject.Destroy(group);
                 }
                 groupNames.Clear();
-            }
-
-            if (InputController.GetKeyDown("Show / Hide UI"))
-            {
-                UI.ShowUI = !UI.ShowUI;
             }
         }
 
@@ -117,7 +109,6 @@ namespace UnityKinematics
             }
 
             CheckKeyboard();
-            UI.UpdateUI();
 
             frameCount++;
             if (frameCount % SkipRate != 0) 
@@ -161,6 +152,8 @@ namespace UnityKinematics
                         }
                     }
                 }
+
+                KinematicsServerEvents.InvokeOnNewFrame();
             }
         }
     }

@@ -11,21 +11,15 @@ namespace UnityKinematics
             texture = (Texture2D)Resources.Load("wood");
         }
 
-        public void HandleCommand(Command cmd)
-        {
-            if (cmd.name.IndexOf("_sys_") == 0) HandleSystemCommand(cmd);
-            else HandleCustomCommand(cmd);
-        }
-
-        private void HandleSystemCommand(Command cmd)
+        internal void HandleCommand(Command cmd)
         {
             switch (cmd.name)
             {
                 case "_sys_create_primitive":
                     CmdCreatePrimitive(cmd);
                     break; 
-                case "_sys_physical_fps":
-                    CmdPhysicalFPS(cmd);
+                default:
+                    KinematicsServerEvents.InvokeOnCommand(cmd);
                     break;
             }
         }
@@ -36,7 +30,7 @@ namespace UnityKinematics
             string groupName = cmd.ps[1];
             string givenName = cmd.ps[2];
 
-            Controller.groupNames.Add(groupName);
+            KinematicsServer.groupNames.Add(groupName);
 
             GameObject groupObj = GameObject.Find(groupName);
             if (groupObj == null) groupObj = new GameObject(groupName);
@@ -67,8 +61,8 @@ namespace UnityKinematics
             }
 
             Material material;
-            if (Controller.RegisteredMaterialsMap.ContainsKey(groupName)) material = Controller.RegisteredMaterialsMap[groupName];
-            else material = Controller.RegisteredMaterialsMap["_sys_default"];
+            if (KinematicsServer.RegisteredMaterialsMap.ContainsKey(groupName)) material = KinematicsServer.RegisteredMaterialsMap[groupName];
+            else material = KinematicsServer.RegisteredMaterialsMap["_sys_default"];
 
             obj.GetGameObject().transform.SetParent(groupObj.transform);
             foreach (GameObject renderableObj in obj.GetRenderableObjects())
@@ -76,13 +70,6 @@ namespace UnityKinematics
                 renderableObj.GetComponent<Renderer>().material = material;
                 renderableObj.GetComponent<Renderer>().receiveShadows = false;
             }
-        }
-
-        private void CmdPhysicalFPS(Command cmd)
-        {
-            UI.PhysicalFPS = cmd.pi[0];
-            UI.MaxPhysicalFPS = cmd.pi[1];
-            UI.PhysicalPaused = cmd.pi[2];
         }
     }
 }

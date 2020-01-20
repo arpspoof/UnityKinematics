@@ -7,7 +7,7 @@ namespace UnityKinematics
     {
         private static Dictionary<string, KeyCode> keys = new Dictionary<string, KeyCode>();
 
-        public static void InitKeyMapping(Controller controller)
+        public static void InitKeyMapping(KinematicsServer controller)
         {
             foreach (var map in controller.shortcutSettings.CameraControl) keys.Add(map.name, map.key);
             foreach (var map in controller.shortcutSettings.FPSControl) keys.Add(map.name, map.key);
