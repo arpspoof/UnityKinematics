@@ -15,10 +15,8 @@ namespace UnityKinematics
         public float radiusAdjustmentStep = 0.1f;
         public float offsetAdjustmentStep = 0.1f;
 
-        void Update()
+        private void UpdateTracking()
         {
-            HandleKeyPress();
-
             GameObject obj = GameObject.Find(trackingName);
             if (obj)
             {
@@ -31,6 +29,17 @@ namespace UnityKinematics
                 transform.position = trackingOffsetPos + sphereCenter;
                 transform.LookAt(sphereCenter, Vector3.up);
             }
+        }
+
+        void Start()
+        {
+            KinematicsServerEvents.OnNewFrame += UpdateTracking;
+        }
+
+        void Update()
+        {
+            HandleKeyPress();
+            UpdateTracking();
         }
 
         private void HandleKeyPress()
