@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// Require: LineRenderer
-
 namespace UnityKinematics
 {
     [RequireComponent(typeof(LineRenderer))]
@@ -22,6 +20,11 @@ namespace UnityKinematics
         void Start()
         {
             KinematicsServerEvents.OnNewFrame += OnNewFrame;
+        }
+
+        public void Clear()
+        {
+            Reset();
         }
 
         private void OnNewFrame()
