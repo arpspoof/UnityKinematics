@@ -99,17 +99,10 @@ createLibrary(server ${SERVER_PATH} ${LIBS} ${SYS_LIBS})
 set_target_properties(client PROPERTIES PUBLIC_HEADER 
     "src/common/include/DataFormat.hpp;src/common/include/ActorBuffer.hpp;src/common/include/Command.hpp;src/client/include/api/KinematicsClient.hpp;src/client/include/RenderController.hpp;src/client/include/AbstractCommandHandler.hpp;src/client/include/AbstractDataProvider.hpp"
 )
-set_target_properties(server PROPERTIES PUBLIC_HEADER 
-    "src/common/include/DataFormat.hpp;src/common/include/ActorBuffer.hpp;src/common/include/Command.hpp;src/server/include/api/KinematicsServer.hpp"
-)
 
 INSTALL(TARGETS client 
-        LIBRARY DESTINATION KinematicsClient/lib
-        PUBLIC_HEADER DESTINATION include/KinematicsClient
-)
-INSTALL(TARGETS server 
-        LIBRARY DESTINATION KinematicsServer/lib
-        PUBLIC_HEADER DESTINATION include/KinematicsServer
+        LIBRARY DESTINATION lib
+        PUBLIC_HEADER DESTINATION include
 )
 
 
