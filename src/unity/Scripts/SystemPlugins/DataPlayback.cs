@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using static UnityKinematics.SerializableObjects;
 
 namespace UnityKinematics
@@ -8,7 +9,10 @@ namespace UnityKinematics
     public class DataPlayback : MonoBehaviour
     {
         public string pathToFile;
-        public bool feedDataAtStartTime = true;
+
+        private List<SerializableFrameState> frameList;
+        private List<SerializableCommand> commandList;
+        private int commandPointer;
 
         private static T ReadFromBinaryFile<T>(string filePath)
         {
@@ -24,22 +28,49 @@ namespace UnityKinematics
             if (!isActiveAndEnabled) return;
             Debug.Log("Feed data from file");
 
+            commandPointer = 0;
+
             var cmdBuffer = UnityServerAPI.RPCGetCommandBuffer();
             var frameBuffer = UnityServerAPI.RPCGetFrameBuffer();
 
             var dataList = ReadFromBinaryFile<List<SerializableData>>(pathToFile);
-            foreach (var data in dataList)
+            frameList = (
+                from d in dataList 
+                where d.GetType() == typeof(SerializableFrameState)
+                select d as SerializableFrameState
+            ).ToList();
+            commandList = (
+                from d in dataList 
+                where d.GetType() == typeof(SerializableCommand)
+                select d as SerializableCommand
+            ).ToList();
+
+            frameList.ForEach(f => UnityServerAPI.RPCGetFrameBuffer().Write(f));
+        }
+
+        private void FeedCommands(int frameId)
+        {
+            if (!isActiveAndEnabled) return;
+            int prevCommandPointer = commandPointer;
+            while (commandList.Count > commandPointer && frameId == commandList[commandPointer].frameId)
             {
-                if (data.GetType() == typeof(SerializableCommand)) 
-                    cmdBuffer.Write((SerializableCommand)data);
-                if (data.GetType() == typeof(SerializableFrameState)) 
-                    frameBuffer.Write((SerializableFrameState)data);
+                UnityServerAPI.RPCGetCommandBuffer().Write(commandList[commandPointer]);
+                commandPointer++;
+            }
+            if (commandPointer > prevCommandPointer)
+            {
+                KinematicsServer.instance.ExecutePendingCommands();
             }
         }
 
         void Awake()
         {
             KinematicsServerEvents.OnServerInitialize += FeedData;
+            KinematicsServerEvents.OnBeforeNewFrame += FeedCommands;
+        }
+        
+        void Start()
+        {
         }
     }
 }

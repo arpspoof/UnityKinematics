@@ -14,13 +14,15 @@ namespace UnityKinematics
         [Serializable]
         public class SerializableCommand : SerializableData
         {
+            public int frameId;
             public string name;
             public List<int> pi;
             public List<float> pf;
             public List<string> ps;
             
-            public SerializableCommand(Command cmd)
+            public SerializableCommand(Command cmd, int frameId)
             {
+                this.frameId = frameId;
                 this.name = cmd.name;
                 this.pi = (from i in cmd.pi select i).ToList();
                 this.pf = (from f in cmd.pf select f).ToList();

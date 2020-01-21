@@ -19,7 +19,7 @@ namespace UnityKinematics
 
         void Start()
         {
-            KinematicsServerEvents.OnNewFrame += OnNewFrame;
+            KinematicsServerEvents.OnAfterNewFrame += OnNewFrame;
         }
 
         public void Clear()

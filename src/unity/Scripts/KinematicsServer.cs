@@ -3,41 +3,10 @@ using System.Collections.Generic;
 
 namespace UnityKinematics
 {
-    public static class KinematicsServerEvents
-    {
-        public delegate void ServerInitializeHandlerDelegate();
-        public delegate void CommandHandlerDelegate(Command cmd);
-        public delegate void SystemCommandHandlerDelegate(Command cmd);
-        public delegate void NewFrameHandlerDelegate(FrameState frame);
-
-        public static event ServerInitializeHandlerDelegate OnServerInitialize;
-        public static event CommandHandlerDelegate OnCommand;
-        public static event SystemCommandHandlerDelegate OnSystemCommand;
-        public static event NewFrameHandlerDelegate OnNewFrame;
-
-        internal static void InvokeOnServerInitialize()
-        {
-            OnServerInitialize?.Invoke();
-        }
-
-        internal static void InvokeOnCommand(Command cmd)
-        {
-            OnCommand?.Invoke(cmd);
-        }
-
-        internal static void InvokeOnSystemCommand(Command cmd)
-        {
-            OnSystemCommand?.Invoke(cmd);
-        }
-
-        internal static void InvokeOnNewFrame(FrameState frame)
-        {
-            OnNewFrame?.Invoke(frame);
-        }
-    }
-
     public partial class KinematicsServer : MonoBehaviour
     {
+        public static KinematicsServer instance;
+
         public GeneralSettings generalSettings = new GeneralSettings();
         public ShortcutSettings shortcutSettings = new ShortcutSettings();
 
@@ -45,9 +14,15 @@ namespace UnityKinematics
         public static Dictionary<string, Material> RegisteredMaterialsMap = new Dictionary<string, Material>();
         public static HashSet<string> groupNames = new HashSet<string>();
 
-        private int frameCount = -1;
+        private int renderFrameCount = -1;
+        private int physicalFrameCount = 0;
         private CommandHandler commandHandler;
         private List<string> monitoredKeys = new List<string> { "Physical FPS -", "Physical FPS +", "Pause" };
+
+        void Awake()
+        {
+            instance = this;
+        }
 
         void Start()
         {
@@ -114,7 +89,7 @@ namespace UnityKinematics
             }
         }
 
-        void Update()
+        public void ExecutePendingCommands()
         {
             RPCCommandBuffer cmdBuffer = UnityServerAPI.RPCGetCommandBuffer();
             int nCmd = cmdBuffer.GetNumOfAvailableElements();
@@ -124,11 +99,15 @@ namespace UnityKinematics
                 Command cmd = cmdBuffer.ReadAndErase(0);
                 commandHandler.HandleCommand(cmd);
             }
+        }
 
+        void Update()
+        {
+            ExecutePendingCommands();
             CheckKeyboard();
 
-            frameCount++;
-            if (frameCount % SkipRate != 0) 
+            renderFrameCount++;
+            if (renderFrameCount % SkipRate != 0) 
             {
                 return;
             }
@@ -137,6 +116,8 @@ namespace UnityKinematics
             int n = frameBuffer.GetNumOfAvailableElements();
             if (n > 0)
             {
+                KinematicsServerEvents.InvokeOnBeforeNewFrame(physicalFrameCount++);
+
                 FrameState data = frameBuffer.ReadAndErase(0);
                 foreach (GroupState groupState in data.groups)
                 {
@@ -168,7 +149,7 @@ namespace UnityKinematics
                     }
                 }
 
-                KinematicsServerEvents.InvokeOnNewFrame(data);
+                KinematicsServerEvents.InvokeOnAfterNewFrame(data);
             }
         }
     }

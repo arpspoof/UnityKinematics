@@ -33,7 +33,7 @@ namespace UnityKinematics
 
         void Start()
         {
-            KinematicsServerEvents.OnNewFrame += f => UpdateTracking();
+            KinematicsServerEvents.OnAfterNewFrame += f => UpdateTracking();
         }
 
         void Update()
