@@ -139,12 +139,10 @@ namespace UnityKinematics
                         if (trans)
                         {
                             GameObject obj = trans.gameObject;
-                            obj.transform.position = new Vector3(state.x, state.y, -state.z);
-                            Vector3 axis; 
-                            float angle;
-                            new Quaternion(state.qx, state.qy, state.qz, state.qw).ToAngleAxis(out angle, out axis);
-                            axis.z = -axis.z;
-                            obj.transform.rotation = Quaternion.AngleAxis(-angle, axis);
+                            Vector3 p = new Vector3(state.x, state.y, state.z);
+                            Quaternion q = new Quaternion(state.qx, state.qy, state.qz, state.qw);
+                            obj.transform.position = CoordinateTransform.RightHandToLeftHand(p);
+                            obj.transform.rotation = CoordinateTransform.RightHandToLeftHand(q);
                         }
                         else
                         {
