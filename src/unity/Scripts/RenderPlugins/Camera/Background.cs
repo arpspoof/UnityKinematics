@@ -31,7 +31,9 @@ namespace UnityKinematics
 
         void OnValidate()
         {
+#if UNITY_EDITOR
             UpdateSettings();
+#endif
         }
     }
 }

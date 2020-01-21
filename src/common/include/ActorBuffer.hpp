@@ -29,9 +29,9 @@ public:
         return result;
     }
 
-    void Write(const T& frameState)
+    void Write(const T& data)
     {
         const std::lock_guard<std::mutex> _guard(lock);
-        buffer.push_back(frameState);
+        buffer.push_back(data);
     }
 };

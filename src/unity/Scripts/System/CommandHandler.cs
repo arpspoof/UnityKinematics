@@ -20,8 +20,9 @@ namespace UnityKinematics
                     break; 
                 default:
                     KinematicsServerEvents.InvokeOnCommand(cmd);
-                    break;
+                    return;
             }
+            KinematicsServerEvents.InvokeOnSystemCommand(cmd);
         }
 
         private void CmdCreatePrimitive(Command cmd)

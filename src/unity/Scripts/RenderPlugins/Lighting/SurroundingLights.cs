@@ -98,24 +98,30 @@ namespace UnityKinematics
 
         void Reset()
         {
+#if UNITY_EDITOR
             CreateDownwardAndSunlight();
             UpdateLightsProperties();
+#endif
         }
 
         private void UpdateLightsEdit()
         {
+#if UNITY_EDITOR
             if (Application.isPlaying) 
             {
                 UnityEditor.EditorApplication.delayCall -= UpdateLightsEdit;
                 return;
             }
             UpdateLightsProperties();
+#endif
         }
 
         void OnValidate()
         {
+#if UNITY_EDITOR
             if (Application.isPlaying) UnityEditor.EditorApplication.delayCall -= UpdateLightsEdit;
             else UnityEditor.EditorApplication.delayCall += UpdateLightsEdit;
+#endif
         }
     }
 }

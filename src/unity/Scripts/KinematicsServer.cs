@@ -5,20 +5,34 @@ namespace UnityKinematics
 {
     public static class KinematicsServerEvents
     {
+        public delegate void ServerInitializeHandlerDelegate();
         public delegate void CommandHandlerDelegate(Command cmd);
-        public delegate void NewFrameHandlerDelegate();
+        public delegate void SystemCommandHandlerDelegate(Command cmd);
+        public delegate void NewFrameHandlerDelegate(FrameState frame);
 
+        public static event ServerInitializeHandlerDelegate OnServerInitialize;
         public static event CommandHandlerDelegate OnCommand;
+        public static event SystemCommandHandlerDelegate OnSystemCommand;
         public static event NewFrameHandlerDelegate OnNewFrame;
+
+        internal static void InvokeOnServerInitialize()
+        {
+            OnServerInitialize?.Invoke();
+        }
 
         internal static void InvokeOnCommand(Command cmd)
         {
             OnCommand?.Invoke(cmd);
         }
 
-        internal static void InvokeOnNewFrame()
+        internal static void InvokeOnSystemCommand(Command cmd)
         {
-            OnNewFrame?.Invoke();
+            OnSystemCommand?.Invoke(cmd);
+        }
+
+        internal static void InvokeOnNewFrame(FrameState frame)
+        {
+            OnNewFrame?.Invoke(frame);
         }
     }
 
@@ -56,6 +70,8 @@ namespace UnityKinematics
 
             UnityServerAPI.RPCStartServer(generalSettings.ServerPort);
             Debug.Log("Waiting for data");
+
+            KinematicsServerEvents.InvokeOnServerInitialize();
         }
 
         void OnApplicationQuit()
@@ -102,6 +118,7 @@ namespace UnityKinematics
         {
             RPCCommandBuffer cmdBuffer = UnityServerAPI.RPCGetCommandBuffer();
             int nCmd = cmdBuffer.GetNumOfAvailableElements();
+            
             for (int i = 0; i < nCmd; i++)
             {
                 Command cmd = cmdBuffer.ReadAndErase(0);
@@ -151,7 +168,7 @@ namespace UnityKinematics
                     }
                 }
 
-                KinematicsServerEvents.InvokeOnNewFrame();
+                KinematicsServerEvents.InvokeOnNewFrame(data);
             }
         }
     }

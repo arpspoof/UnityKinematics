@@ -27,7 +27,7 @@ namespace UnityKinematics
             Reset();
         }
 
-        private void OnNewFrame()
+        private void OnNewFrame(FrameState frame)
         {
             if (frameCounter++ % framesPerMarker != 0) return;
 

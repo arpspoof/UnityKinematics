@@ -10,5 +10,5 @@ public:
     T Read(int index);
     T ReadAndErase(int index);
     
-    void Write(const T& frameState);
+    void Write(const T& data);
 };
