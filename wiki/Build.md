@@ -1,3 +1,5 @@
+# Build Instructions
+
 ## Linux
 ### Prerequisite
 + CMake >= 3.15
@@ -74,3 +76,6 @@
   + save CMakeSettings.json and VS will reconfigure the project
   + Right click on CMakeLists.txt, choose 'Build'
   + If C++ client is needed, also run 'Install'
++ Notes:
+  + Make sure no other application is opening anything inside the ```out``` folder.
+  + If build fails, try a clean build.
