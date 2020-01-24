@@ -117,6 +117,71 @@ while True:
 ```
 Here we use variable ```x``` to 'move' the object. In every frame with duration 0.001 seconds, we move the object by 0.001 meters along the axis. This will result in a 1m/s movement of the cube. 
 
-#### Final notes
+#### Notes
 + Always start your server before running client. Otherwise the client may have trouble connecting the server.
 + Make sure you call ```Tick``` for each data frame, otherwise some features will work randomly.
+
+-----
+Till this point, if everythings is done properly, you should be able to see something like the screenshot below.
+![Screenshot from 2020-01-24 12-18-30](https://user-images.githubusercontent.com/37004963/73101051-b70e9900-3ea3-11ea-9408-da1720413b99.png)
+
+#### Create primitive objects from the client
+It's perhaps more convenient to create directly primitive objects via client side commands so we don't need to create the objects and groups manually in Unity. For now we support 3 kinds of primitive objects to be created via client side command: sphere, capsule and box. Let's try this step by step. First, let's delete the group named ```TestGroup``` in Unity first, and later on we'll try to create the Cube on client side directly. On client side, the API name is ```CreatePrimitive``` which looks like:
+```python 
+CreatePrimitive(primitiveType, groupName, objectName, param0, param1, param2)
+```
+The meaning of the arguments are listed in the following:
++ _primitiveType_: "box", "sphere", or "capsule".
++ _groupName_: Specify which group shall we put the object in. If the group does not correspond to any GameObject on Unity side, an empty group container will be created automatically.
++ _objectName_: Give a name to the object. If a GameObject with the same name already exists under group ```groupName``` in Unity, the original object will be replaced by this new one.
++ _param0_: 
+  + Length along x-axis for box.
+  + Radius for sphere.
+  + Radius for capsule.
++ _param1_:
+  + Length along y-axis for box.
+  + Unused for sphere.
+  + Length for capsule.
++ _param2_:
+  + Length along z-axis for box.
+  + Unused for sphere.
+  + Unused for capsule.
+
+#### Full code snippet with client side primitive object creation
+```python
+from pyUnityRenderer import *
+
+class DataProvider(AbstractDataProvider):
+    def __init__(self):
+        AbstractDataProvider.__init__(self)
+        self.x = 0
+
+    def GetCurrentState(self):
+        frameState = FrameState()
+        frameState.groups.push_back(GroupState("TestGroup"))
+        firstGroup = frameState.groups[0]
+        firstGroup.objectStates.push_back(ObjectState("Cube", self.x, 2, self.x, 1, 0, 0, 0))
+        return frameState
+
+dataProvider = DataProvider()
+
+class CommandHandler(AbstractCommandHandler):
+    def HandleCommand(self, cmd):
+        pass
+
+commandHandler = CommandHandler()
+
+InitRenderController("localhost", 8080, "localhost", 8081, 1000, dataProvider, commandHandler)
+CreatePrimitive("box", "TestGroup", "Cube", 0.5, 1, 1.5)
+
+while True:
+    dataProvider.x += 0.001
+    Tick(0.001)
+```
+
+#### Change primitive object textures / materials
+If you run the above code, you'll see a moving box with wooden texture (default one). This can be changed to an arbitrary Unity material. Several simple steps are needed for this.
++ Create a new material in Unity of your choice. 
++ Go to Controller -> Kinematics Server -> General Settings -> Registered Materials, increment the size. A new element entry will show up. Enter the group name which will use this material in the ```Name``` entry. Drag the created material to the ```Material``` slot.
+
+Now if you run again the program, you will see the cube will be rendered using your own created material.
