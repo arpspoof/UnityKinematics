@@ -7,7 +7,8 @@ namespace UnityKinematics
 {
     public class SurroundingLights : MonoBehaviour
     {
-        public LightType lightsType = LightType.Directional;
+        private LightType lightsType = LightType.Directional;
+        
         public LightShadows sunLightShadowType = LightShadows.Soft;
         public uint nSurroundingLights = 20;
         public float surroundingIntensity = 0.38f;

@@ -29,4 +29,4 @@
 + (*Optional*) Basic knowledge of Unity and C# for server side customizing.
 
 ### Step by step tutorials
-[This tutorial for beginners](TutorialBeginner.md) will go through all the essential steps to build up your own rendering project.
+[This tutorial for beginners](TutorialBeginner.md) will go through all the essential steps to build up your own rendering project. You'll probably need to add more visual effects and rendering components to the Unity project. Checkout [this tutorial on visual effects](TutorialVisualEffects.md) for more step by step instructions.

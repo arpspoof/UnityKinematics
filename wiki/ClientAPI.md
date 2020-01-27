@@ -1,5 +1,6 @@
 ### Full API List
 #### Structures
+[Explanations for ```ObjectState```](TutorialBeginner.md#Describing-state-of-an-object)
 ```c++
 struct ObjectState
 {
@@ -13,6 +14,7 @@ struct ObjectState
         :objectName(objectName), x(0), y(0), z(0), qw(1), qx(0), qy(0), qz(0) {}
 };
 ```
+[Explanations for ```GroupState```](TutorialBeginner.md#Groups-and-state-of-a-group)
 ```c++
 struct GroupState
 {
@@ -23,12 +25,14 @@ struct GroupState
     GroupState(std::string groupName, int nObj) :groupName(groupName), objectStates(nObj) {}
 };
 ```
+[Explanations for ```FrameState```](TutorialBeginner.md#Frames-and-state-of-a-frame)
 ```c++
 struct FrameState
 {
     std::vector<GroupState> groups;
 };
 ```
+[Explanations for ```Command```](CommandSystem.md)
 ```c++
 struct Command
 {
@@ -41,6 +45,7 @@ struct Command
 };
 ```
 #### Abstract classes
+[Explanations for ```AbstractDataProvider```](TutorialBeginner.md#Establish-a-data-provider)
 ```c++
 class AbstractDataProvider
 {
@@ -49,6 +54,7 @@ public:
     virtual ~AbstractDataProvider() {}
 };
 ```
+[Explanations for ```AbstractCommandHandler```](CommandSystem.md)
 ```c++
 class AbstractCommandHandler
 {
@@ -58,6 +64,7 @@ public:
 };
 ```
 #### Methods
+[Explanations for ```InitRenderController```](TutorialBeginner.md#initialize-the-client)
 ```c++
 void InitRenderController(
     const std::string& serverAddr, 
@@ -66,9 +73,11 @@ void InitRenderController(
     unsigned short commandHandlingPort, 
     int maxPhysicalFPS, 
     AbstractDataProvider* dataProvider, 
-    AbstractCommandHandler* commandHandler
+    AbstractCommandHandler* commandHandler, 
+    int rpcTimeout = 2000
 );
 ```
+[Explanations for ```CreatePrimitive```](TutorialBeginner.md#Create-primitive-objects-from-the-client)
 ```c++
 void CreatePrimitive(
     const std::string& type, 
@@ -79,15 +88,13 @@ void CreatePrimitive(
     float param2
 );
 ```
+Explanations for ```Tick``` [part 1](TutorialBeginner.md#Establish-a-data-provider), [part 2](TutorialBeginner.md#Driving-the-time-forward)
 ```c++
 void Tick(float physicalTimeStep);
 ```
+[Explanations for ```SendCustomCommand```](CommandSystem.md#Sending-a-command)
 ```c++
 void SendCustomCommand(const Command& cmd);
-```
-```c++
-// You must dispose resources before exiting the client
-void DisposeRenderController();
 ```
 ```c++
 // Call this if you would like to pause the client and server in your client code
@@ -98,4 +105,8 @@ void Pause(bool setPauseTo = true);
 // This is usually controlled automatically.
 // Call this if you would like to take over the control on client side.
 void SetPhysicalFPS(int fps);
+```
+```c++
+// You must dispose resources before exiting the client
+void DisposeRenderController();
 ```

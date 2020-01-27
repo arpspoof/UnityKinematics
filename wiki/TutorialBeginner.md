@@ -94,8 +94,8 @@ class CommandHandler(AbstractCommandHandler):
 commandHandler = CommandHandler()
 ```
 
-#### Initialize the client
-We should always initialize the client before performing any actual operations. This must be done via the ```InitRenderController``` function. This function takes 7 arguments:
+#### Initialize the client 
+We should always initialize the client before performing any actual operations. This must be done via the ```InitRenderController``` function. This function takes 8 arguments:
 + _serverAddr_: IP address of the remote server.
 + _serverPort_: Running port of the remote server.
 + _localAddr_: IP address of this local machine. This IP address should be accessible by the remote server. If the client and the server are in different LANs, this will be a little bit complicated but in general, techniques like upnp port forwarding will help. If indeed this address is not accessible by the server, some functionalities like FPS control will not work. 
@@ -103,6 +103,8 @@ We should always initialize the client before performing any actual operations. 
 + _maxPhysicalFPS_: This specifies how many physical frames can have in one physical second. As an example for simulators, if the simulation is running in constant time step, just set this to ```int(1.0 / timeStep)``` (it has to be an integer). 
 + _dataProvider_: An instance to a data provider.
 + _commandHandler_: An instance to a command handler. 
++ _rpcTimeout_: Timeout value for any netword call. Default is 2000ms. Any network call not responded after this limit will be cancelled. Please adjust this value according to your network transmission speed. 
+
 A sample call looks like:
 ```python
 InitRenderController("localhost", 8080, "localhost", 8081, 1000, dataProvider, commandHandler)
@@ -185,3 +187,7 @@ If you run the above code, you'll see a moving box with wooden texture (default 
 + Go to Controller -> Kinematics Server -> General Settings -> Registered Materials, increment the size. A new element entry will show up. Enter the group name which will use this material in the ```Name``` entry. Drag the created material to the ```Material``` slot.
 
 Now if you run again the program, you will see the cube will be rendered using your own created material.
+
+#### Other notes
++ If you would like to use a C++ client, please refer to [C++ client](CppClient.md) page for additional set up instructions. 
++ See [API list](ClientAPI.md) for API prototypes.
