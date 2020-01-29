@@ -1,4 +1,4 @@
-### Full API List
+### Client API List
 #### Structures
 [Explanations for ```ObjectState```](TutorialBeginner.md#Describing-state-of-an-object)
 ```c++
