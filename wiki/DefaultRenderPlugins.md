@@ -3,7 +3,7 @@
 ## Introduction
 Breifly, a render plugin is a C# script to be applied on a Unity GameObject to produce certain visual effects, while depending on the system's ability to transmit data from client to server. If the script does not depend on any client side data transmission, it's then a pure visual effect script. Pure visual effect scripts have nothing to do with this project. They can live in Unity in absence of our system. 
 
-This page will introduce all default render plugins provided. To learn how to write a custom render plugin, please refer to [custom render plugins](CustomRenderPlugins.md) page.
+This page will introduce all default render plugins provided. To learn how to write a custom render plugin, please refer to [custom render plugins](CustomPlugins.md) page.
 
 ## Prerequisite
 + A Unity project with ```KinematicsServer``` script attached to a GameObject with presumed name 'Controller'.
