@@ -1,12 +1,27 @@
 # Get Started
 
 ### Wiki pages
-1. [Build Instrutions](Build.md)
-2. [Client Side Start Up](ClientStartUp.md)
-3. [Client Side API List](ClientAPI.md)
-4. [Server Side Usage](ServerUsage.md)
-5. [Command System](CommandSystem.md)
-6. [Video Recording](VideoRecording.md)
+
+#### Tutorials
+0. [Build Instructions](Build.md)
+1. [Tutorial for beginner](TutorialBeginner.md)
+2. [Tutorial on basic visual effects](TutorialVisualEffects.md)
+3. [Video Recording](VideoRecording.md)
+
+#### System Description
+1. [Coordinate transform](CoordinateTransform.md)
+2. [Render plugins](DefaultRenderPlugins.md)
+3. [Keyboard Shortcuts](KeyboardShortcuts.md)
+4. [Using C++ client](CppClient.md)
+
+#### Advanced
+1. [Offline rendering](OfflineRendering.md)
+2. [Command system](CommandSystem.md)
+3. [Custom plugins](CustomPlugins.md)
+
+#### API List
+1. [Client API list](ClientAPI.md)
+2. [Server API list](ServerAPI.md)
 
 ### You may consider this project if ...
 + You think the renderer for your physics simulator is too ugly, almost unsuitable for daily developing and debugging. 

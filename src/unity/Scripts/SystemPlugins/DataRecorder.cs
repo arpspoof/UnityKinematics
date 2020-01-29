@@ -54,13 +54,13 @@ namespace UnityKinematics
                 StopRecordingAndWriteToFile();
         }
 
-        private void RecordFrame(FrameState frame)
+        public void RecordFrame(FrameState frame)
         {
             frameCount++;
             data.Add(new SerializableFrameState(frame));
         }
 
-        private void RecordCommand(Command cmd)
+        public void RecordCommand(Command cmd)
         {
             data.Add(new SerializableCommand(cmd, frameCount));
         }

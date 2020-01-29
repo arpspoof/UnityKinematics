@@ -62,3 +62,26 @@ namespace UnityKinematics
     }
 }
 ```
+
+#### Offline Rendering
+[Explanations for offline rendering](OfflineRendering.md)
+```C#
+namespace UnityKinematics
+{
+    public class DataRecorder : MonoBehaviour
+    {
+        // Initialize the data recorder.
+        // Online data will be automatically captured.
+        public void StartRecording();
+
+        // Write the accumulated data to specified file.
+        // Please specify file name and other properties in Unity Inspector.
+        public void StopRecordingAndWriteToFile();
+
+        // Manually record one data frame.
+        public void RecordFrame(FrameState frame);
+
+        // Manually record one command.
+        public void RecordCommand(Command cmd);
+    }
+```

@@ -57,7 +57,7 @@ This is a spherical camera tracking system. The camera will always stay on the s
 + Required component: Canvas
 
 #### Introduction
-A text box in the top left corner showing rendering and physical FPS. Please refer to [FPS control](FPSControl.md) page for more details about FPS control. This is useful to visualize play speed of the motion. This may be also useful for performance debugging.
+A text box in the top left corner showing rendering and physical FPS. Please refer to [FPS control](KeyboardShortcuts.md#FPS-Control) page for more details about FPS control. This is useful to visualize play speed of the motion. This may be also useful for performance debugging.
 
 #### Parameters
 + *Show UI* : Show / hide the text box.
