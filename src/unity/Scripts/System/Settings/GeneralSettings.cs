@@ -18,5 +18,8 @@ namespace UnityKinematics
 
         [Header("Materials")]
         public RegisteredMaterials[] registeredMaterials;
+
+        [Header("Data")]
+        public float scalingFactor = 1;
     }
 }

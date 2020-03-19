@@ -22,7 +22,8 @@ namespace UnityKinematics
 
         public Sphere(string name, float radius)
         {
-            this.radius = radius;
+            float scale = KinematicsServer.instance.generalSettings.scalingFactor;
+            this.radius = radius * scale;
             obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             obj.name = name;
             UpdateTransform();
@@ -53,8 +54,10 @@ namespace UnityKinematics
 
         public Capsule(string name, float radius, float length)
         {
-            this.radius = radius;
-            this.length = length;
+            float scale = KinematicsServer.instance.generalSettings.scalingFactor;
+
+            this.radius = radius * scale;
+            this.length = length * scale;
 
             obj = new GameObject(name);
             obj.name = name;
@@ -115,9 +118,11 @@ namespace UnityKinematics
 
         public Box(string name, float lengthX, float lengthY, float lengthZ)
         {
-            this.lengthX = lengthX;
-            this.lengthY = lengthY;
-            this.lengthZ = lengthZ;
+            float scale = KinematicsServer.instance.generalSettings.scalingFactor;
+
+            this.lengthX = lengthX * scale;
+            this.lengthY = lengthY * scale;
+            this.lengthZ = lengthZ * scale;
             obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
             obj.name = name;
             UpdateTransform();

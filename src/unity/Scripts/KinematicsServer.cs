@@ -137,7 +137,7 @@ namespace UnityKinematics
                         if (trans)
                         {
                             GameObject obj = trans.gameObject;
-                            Vector3 p = new Vector3(state.x, state.y, state.z);
+                            Vector3 p = new Vector3(state.x, state.y, state.z) * generalSettings.scalingFactor;
                             Quaternion q = new Quaternion(state.qx, state.qy, state.qz, state.qw);
                             obj.transform.position = CoordinateTransform.RightHandToLeftHand(p);
                             obj.transform.rotation = CoordinateTransform.RightHandToLeftHand(q);
