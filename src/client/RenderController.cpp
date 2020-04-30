@@ -11,7 +11,8 @@ using namespace std::chrono;
 static bool paused = false;
 static int physicalFPS = 60;
 static int maxPhysicalFPS = 60;
-static double timeAccumulator = 20000; // INF
+static double timeAccumulator = 0;
+static double wallClockTimeAccumulator = 0;
 
 static AbstractDataProvider* dataProvider;
 static AbstractCommandHandler* commandHandler;
@@ -112,7 +113,7 @@ static void SleepPause()
     }
 }
 
-void Tick(float physicalTimeStep)
+void Tick(float physicalTimeStep, float wallClockTime)
 {
     PollCommand();
 
@@ -121,9 +122,15 @@ void Tick(float physicalTimeStep)
     }
 
     timeAccumulator += physicalTimeStep;
+    wallClockTimeAccumulator += wallClockTime;
+
     if (timeAccumulator >= 1.0 / physicalFPS) {
-        timeAccumulator = 0;
         FrameState frameState = dataProvider->GetCurrentState();
+        frameState.duration = wallClockTimeAccumulator;
+
+        timeAccumulator -= 1.0 / physicalFPS;
+        wallClockTimeAccumulator = 0;
+
         int bufferedFrames = CreateFrame(frameState);
         if (bufferedFrames > 10) {
             int sleepDuration = bufferedFrames * 15;

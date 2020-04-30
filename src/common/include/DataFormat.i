@@ -34,5 +34,6 @@ namespace std {
 
 struct FrameState
 {
+    double duration;
     std::vector<GroupState> groups;
 };

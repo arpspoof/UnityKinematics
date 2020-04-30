@@ -30,6 +30,7 @@ struct GroupState
 
 struct FrameState
 {
+    double duration;
     std::vector<GroupState> groups;
-    MSGPACK_DEFINE_ARRAY(groups)
+    MSGPACK_DEFINE_ARRAY(duration, groups)
 };

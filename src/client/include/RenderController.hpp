@@ -20,7 +20,7 @@ void DisposeRenderController();
 void Pause(bool setPauseTo = true);
 void SetPhysicalFPS(int fps);
 
-void Tick(float physicalTimeStep);
+void Tick(float physicalTimeStep, float wallClockTime);
 
 void SendCustomCommand(const Command& cmd);
 void CreatePrimitive(
