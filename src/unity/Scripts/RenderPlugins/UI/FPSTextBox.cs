@@ -86,7 +86,7 @@ namespace UnityKinematics
             }
 
             int fps = Mathf.CeilToInt(1.0f / Time.deltaTime);
-            renderFPSTextObj.GetComponent<Text>().text = $"Render: {(fps + (fps & 1)) / KinematicsServer.SkipRate} RF/s";
+            renderFPSTextObj.GetComponent<Text>().text = $"Render: {(fps + (fps & 1)) / KinematicsServer.instance.skipRate} RF/s";
             renderFPSTextObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, posY);
         }
 

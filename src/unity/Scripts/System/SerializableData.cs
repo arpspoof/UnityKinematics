@@ -88,16 +88,19 @@ namespace UnityKinematics
         [Serializable]
         public class SerializableFrameState : SerializableData
         {
+            public double duration;
             public List<SerializableGroupState> groups;
 
             public SerializableFrameState(FrameState f)
             {
+                duration = f.duration;
                 groups = (from g in f.groups select new SerializableGroupState(g)).ToList();
             }
 
             public static implicit operator FrameState(SerializableFrameState sf)
             {
                 FrameState f = new FrameState();
+                f.duration = sf.duration;
                 f.groups = new vectorgroupstate(from sg in sf.groups select (GroupState)sg);
                 return f;
             }

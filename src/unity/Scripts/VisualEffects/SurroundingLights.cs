@@ -15,6 +15,9 @@ namespace UnityKinematics
         public float surroundingOffsetY = -1.5f;
         public float downwardIntensity = 0;
         public float sunLightIntensity = 0.38f;
+        public float sunLightRotationX = 60;
+        public float sunLightRotationY = 0;
+        public float shadowStrength = 0.5f;
 
         private GameObject GetLightObj(int i, bool createIfNotExist)
         {
@@ -44,6 +47,7 @@ namespace UnityKinematics
             sunLight.type = LightType.Directional;
             sunLight.shadows = sunLightShadowType;
             sunLight.intensity = sunLightIntensity;
+            sunLight.shadowStrength = shadowStrength;
 
             for (int i = 0; i < nSurroundingLights; i++)
             {
@@ -77,7 +81,7 @@ namespace UnityKinematics
             downwardLightObj.AddComponent<Light>();
 
             var sunLightObj = new GameObject("SunLight");
-            sunLightObj.transform.rotation = Quaternion.Euler(60, 0, 0);
+            sunLightObj.transform.rotation = Quaternion.Euler(sunLightRotationX, sunLightRotationY, 0);
             sunLightObj.transform.parent = transform;
             sunLightObj.AddComponent<Light>();
         }

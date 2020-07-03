@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace UnityKinematics
@@ -14,6 +15,9 @@ namespace UnityKinematics
         public float latitudeAdjustmentStep = 0.02f;
         public float radiusAdjustmentStep = 0.1f;
         public float offsetAdjustmentStep = 0.1f;
+        public bool trackX = true;
+        public bool trackY = false;
+        public bool trackZ = true;
 
         private void UpdateTracking()
         {
@@ -24,7 +28,8 @@ namespace UnityKinematics
                     Mathf.Cos(latitude) * Mathf.Cos(longitude), 
                     Mathf.Sin(latitude),
                     Mathf.Cos(latitude) * Mathf.Sin(longitude));
-                Vector3 sphereCenter = obj.transform.position + sphereCenterOffset;
+                Vector3 transformMask = new Vector3(Convert.ToSingle(trackX), Convert.ToSingle(trackY), Convert.ToSingle(trackZ));
+                Vector3 sphereCenter = Vector3.Scale(transformMask, obj.transform.position) + sphereCenterOffset;
                 sphereCenter.y = sphereCenterOffset.y;
                 transform.position = trackingOffsetPos + sphereCenter;
                 transform.LookAt(sphereCenter, Vector3.up);

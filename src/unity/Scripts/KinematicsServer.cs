@@ -10,7 +10,16 @@ namespace UnityKinematics
         public GeneralSettings generalSettings = new GeneralSettings();
         public ShortcutSettings shortcutSettings = new ShortcutSettings();
 
-        public static int SkipRate = 1;
+        public int skipRate = 1;
+        public Material defaultMaterial = null;
+
+        public bool enableSpeedMatch = true;
+
+        public int nModels = 1;
+
+        public int AccumulatedFrames { get; private set; } = 0;
+        public double AccumulatedFrameDuration { get; private set; } = 0;
+
         public static Dictionary<string, Material> RegisteredMaterialsMap = new Dictionary<string, Material>();
         public static HashSet<string> groupNames = new HashSet<string>();
 
@@ -37,11 +46,15 @@ namespace UnityKinematics
             }
 
             Renderer renderer = gameObject.AddComponent<MeshRenderer>();
-            renderer.material.mainTexture = (Texture2D)Resources.Load("wood");;
             renderer.material.SetFloat("_Metallic", 0.1f);
-            renderer.material.SetFloat("_Glossiness", 0.1f);   
+            renderer.material.SetFloat("_Glossiness", 0.1f);
+            if (defaultMaterial == null)
+            {
+                renderer.material.mainTexture = (Texture2D)Resources.Load("wood");
+                defaultMaterial = renderer.material;
+            }
 
-            RegisteredMaterialsMap.Add("_sys_default", renderer.material);
+            RegisteredMaterialsMap.Add("_sys_default", defaultMaterial);
 
             UnityServerAPI.RPCStartServer(generalSettings.ServerPort);
             Debug.Log("Waiting for data");
@@ -71,11 +84,11 @@ namespace UnityKinematics
 
             if (InputController.GetKeyDown("Render FPS -"))
             {
-                SkipRate++;
+                skipRate++;
             }
             if (InputController.GetKeyDown("Render FPS +"))
             {
-                if (SkipRate > 1) SkipRate--;
+                if (skipRate > 1) skipRate--;
             }
 
             if (InputController.GetKeyDown("Reset Scene"))
@@ -107,10 +120,11 @@ namespace UnityKinematics
             CheckKeyboard();
 
             renderFrameCount++;
-            if (renderFrameCount % SkipRate != 0) 
+            if (renderFrameCount % skipRate != 0) 
             {
                 return;
             }
+            if (enableSpeedMatch && Time.time < AccumulatedFrameDuration) return;
 
             RPCFrameBuffer frameBuffer = UnityServerAPI.RPCGetFrameBuffer();
             int n = frameBuffer.GetNumOfAvailableElements();
@@ -119,6 +133,10 @@ namespace UnityKinematics
                 KinematicsServerEvents.InvokeOnBeforeNewFrame(physicalFrameCount++);
 
                 FrameState data = frameBuffer.ReadAndErase(0);
+
+                AccumulatedFrames++;
+                AccumulatedFrameDuration += data.duration;
+
                 foreach (GroupState groupState in data.groups)
                 {
                     groupNames.Add(groupState.groupName);
@@ -139,8 +157,11 @@ namespace UnityKinematics
                             GameObject obj = trans.gameObject;
                             Vector3 p = new Vector3(state.x, state.y, state.z) * generalSettings.scalingFactor;
                             Quaternion q = new Quaternion(state.qx, state.qy, state.qz, state.qw);
-                            obj.transform.position = CoordinateTransform.RightHandToLeftHand(p);
-                            obj.transform.rotation = CoordinateTransform.RightHandToLeftHand(q);
+                            bool pHasNaN = float.IsNaN(p.x) || float.IsNaN(p.y) || float.IsNaN(p.z);
+                            bool qHasNaN = float.IsNaN(q.x) || float.IsNaN(q.y) || float.IsNaN(q.z) || float.IsNaN(q.w);
+                            if (!pHasNaN) obj.transform.position = CoordinateTransform.RightHandToLeftHand(p);
+                            if (!qHasNaN) obj.transform.rotation = CoordinateTransform.RightHandToLeftHand(q);
+                            if (pHasNaN || qHasNaN) Debug.LogWarning("Receive NaN in frame data, discard");
                         }
                         else
                         {
